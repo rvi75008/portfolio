@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: details
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - actif
+            - day
+    columns:
+      - name: actif
+        tests:
+          - not_null
+      - name: valo
+        tests:
+          - not_null
+  - name: rente
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - action
+            - day
+    columns:
+      - name: action
+        tests:
+          - not_null
+      - name: dividende
+        tests:
+          - not_null
