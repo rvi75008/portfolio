@@ -10,26 +10,20 @@ transformations = {
                 lambda x: float(x.replace(" ", "").replace(",", ".")),
             )
         ],
-        "new_cols": [("date", datetime.now())],
+        "new_cols": [
+            ("date", datetime.now()),
+            ("day", datetime.now().strftime("%y-%m-%d")),
+        ],
     },
     "rente": {
         "cols": [
-            "Nom",
-            "Janvier",
-            "Février",
-            "Mars",
-            "Avril",
-            "Mai",
-            "Juin",
-            "Juillet",
-            "Août",
-            "Septembre",
-            "Octobre",
-            "Novembre",
-            "Décembre",
+            "action",
             "Dvidende Estimé",
         ],
         "rows": (0, 100),
-        "new_cols": [("date", datetime.now())],
+        "new_cols": [
+            ("date", datetime.now()),
+            ("day", datetime.now().strftime("%y-%m-%d")),
+        ],
     },
 }

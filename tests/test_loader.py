@@ -47,7 +47,7 @@ async def test_loader(
     )
     await main("tests")
     assert pd.read_sql(
-        "select * from fake_file;", create_engine(connection_string)
+        "select * from fake_file_stg;", create_engine(connection_string)
     ).to_dict() == {"bar": {0: 2}, "foo": {0: 1}}
 
 
