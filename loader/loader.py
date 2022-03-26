@@ -35,7 +35,7 @@ class PostgresLoader(Loader):
         connection = create_engine(self.connection_uri, pool_size=20)
         try:
             pd.read_csv(filepath_or_buffer=io.StringIO(data)).to_sql(
-                table,
+                f"{table}_stg",
                 connection,
                 if_exists="append",
                 index=False,
@@ -75,7 +75,10 @@ async def main(input_dir: str):
         )
     except (OSError, InsertionError) as e:
         async_postgres_loader.logger.error(f"Error during insertion: {e}")
-        [shutil.move(f, "aborted") for f in files_to_insert]
+        [  # pragma: no cover
+            shutil.move(f, f'aborted/{f.split("/")[-1]}_{datetime.now()}')
+            for f in files_to_insert
+        ]
 
 
 if __name__ == "__main__":
