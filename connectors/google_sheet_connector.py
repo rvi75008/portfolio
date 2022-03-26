@@ -6,8 +6,8 @@ import httpx
 import pandas as pd
 import yaml
 
-from connector.extraction_helpers import clean_df
-from connector.transformation_config import transformations
+from connectors.helpers.extraction_helpers import clean_df
+from connectors.helpers.transformation_config import transformations # type: ignore
 
 
 class DataSource:
@@ -30,7 +30,7 @@ class DataSourcesNotSet(Exception):
 
 
 class Connector:
-    def __init__(self, datasources: Optional[List[DataSource]]) -> None:
+    def __init__(self, datasources: List[DataSource]) -> None:
         self.datasources = datasources
 
     async def async_extract_csvs(self, decimal: Optional[str]) -> List[pd.DataFrame]:

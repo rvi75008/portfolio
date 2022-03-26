@@ -16,7 +16,6 @@ def io_mocks(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=["fake_file.csv"])
     mocker.patch("loader.loader.shutil.move")
     mocker.patch("loader.loader.open")
-    mocker.patch("connector.connector.open")
 
 
 @pytest.fixture(scope="module")
@@ -43,7 +42,7 @@ async def test_loader(
 ) -> None:
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     mocker.patch(
-        "connector.connector.yaml.load",
+        "loader.loader.yaml.load",
         return_value={"uri": connection_string},
     )
     await main("tests")
@@ -59,7 +58,7 @@ async def test_loader_error(
     mocker.patch("loader.loader.pd.DataFrame.to_sql", side_effect=OperationalError)
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     mocker.patch(
-        "connector.connector.yaml.load",
+        "loader.loader.yaml.load",
         return_value={"uri": connection_string},
     )
     mocklogger = MagicMock()
