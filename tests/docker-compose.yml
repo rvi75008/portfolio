@@ -1,0 +1,8 @@
+postgres:
+  image: postgres
+  environment:
+    - POSTGRES_DB=postgres_db
+    - POSTGRES_USER=ubuntu
+    - POSTGRES_PASSWORD=passwordpassword
+  ports:
+    - 5432:5432
