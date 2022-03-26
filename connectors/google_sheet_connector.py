@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 
 from connectors.helpers.extraction_helpers import clean_df
-from connectors.helpers.transformation_config import transformations # type: ignore
+from connectors.helpers.transformation_config import transformations  # type: ignore
 
 
 class DataSource:
