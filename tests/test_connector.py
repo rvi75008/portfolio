@@ -4,7 +4,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 from pytest_mock import MockFixture
 
-from connector.connector import Connector, DataSource, main
+from connectors.google_sheet_connector import Connector, DataSource, main
 
 
 @pytest.fixture
@@ -65,16 +65,17 @@ async def test_connector_extraction(
 
 @pytest.mark.asyncio
 async def test_main(mocker: MockFixture, connector: Connector) -> None:
-    mocker.patch("connector.connector.open")
+    mocker.patch("connectors.google_sheet_connector.open")
     mocker.patch(
-        "connector.connector.transformations", return_value={"retails": {}, "dente": {}}
+        "connectors.google_sheet_connector.transformations",
+        return_value={"retails": {}, "dente": {}},
     )
     mocker.patch(
-        "connector.connector.yaml.load",
+        "connectors.google_sheet_connector.yaml.load",
         return_value={"spreadsheet_id": 12, "sheet_names": ["foo", "bar"]},
     )
     mock = AsyncMock()
-    mocker.patch("connector.connector.Connector", return_value=mock)
+    mocker.patch("connectors.google_sheet_connector.Connector", return_value=mock)
 
     await main()
     assert mock.extract_data.call_count == 1

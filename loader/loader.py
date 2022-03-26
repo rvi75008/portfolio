@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 from abc import ABC
+from datetime import datetime
 from typing import Optional
 
 import aiofiles
@@ -16,7 +17,7 @@ connection_pool: Optional[pool.SimpleConnectionPool] = None
 
 
 class Loader(ABC):
-    def load(self, data: pd.DataFrame, file: str) -> None:
+    def load(self, data: str, file: str) -> None:
         ...  # pragma: no cover
 
 
@@ -49,10 +50,10 @@ class AsyncPostgresLoader(PostgresLoader):
     def __init__(self, connection_params: str):
         super().__init__(connection_params)
 
-    async def async_load(self, file: str) -> asyncio.Future:
+    async def async_load(self, file: str) -> None:
         async with aiofiles.open(file, mode="r", buffering=1) as f:
             data = await f.read()
-            return self.load(data, file)
+            self.load(data, file)
 
 
 async def main(input_dir: str):
@@ -65,7 +66,10 @@ async def main(input_dir: str):
         await asyncio.gather(
             *[async_postgres_loader.async_load(file) for file in files_to_insert]
         )
-        [shutil.move(f, "inserted") for f in files_to_insert]
+        [
+            shutil.move(f, f'inserted/{f.split("/")[-1]}_{datetime.now()}')
+            for f in files_to_insert
+        ]
         async_postgres_loader.logger.info(
             "Files inserted into db and moved to /inserted"
         )
