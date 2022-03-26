@@ -75,7 +75,7 @@ async def main(input_dir: str):
         )
     except (OSError, InsertionError) as e:
         async_postgres_loader.logger.error(f"Error during insertion: {e}")
-        [
+        [  # pragma: no cover
             shutil.move(f, f'aborted/{f.split("/")[-1]}_{datetime.now()}')
             for f in files_to_insert
         ]

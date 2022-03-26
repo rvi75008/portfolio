@@ -20,8 +20,17 @@ lint:
 test:
 	python -m pytest --junitxml=test-report.xml --cov=. --cov-report xml
 
+.PHONY: test_local
+test_local:
+	python -m pytest --junitxml=test-report.xml --cov=. --cov-report xml
+	dbt test
+
 .PHONY: install
 install:
 	pip install -U setuptools pip==20.2
 	pip install -r requirements.txt --ignore-installed
 	pip install .
+
+.PHONY: doc
+doc:
+	dbt docs generate
