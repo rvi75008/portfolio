@@ -58,7 +58,7 @@ class Connector:
 
 async def main():
 
-    with open("connector/extraction_config.yaml") as f:
+    with open("config/extraction_config.yaml") as f:
         extraction_config = yaml.load(f, Loader=yaml.FullLoader)
     datasources = [
         DataSource(extraction_config["spreadsheet_id"], sheet, transformations[sheet])

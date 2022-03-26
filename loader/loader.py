@@ -56,7 +56,7 @@ class AsyncPostgresLoader(PostgresLoader):
 
 
 async def main(input_dir: str):
-    with open("loader/connection_params.yml") as f:
+    with open("config/connection_params.yml") as f:
         connection_params = yaml.load(f, Loader=yaml.FullLoader)
     async_postgres_loader = AsyncPostgresLoader(connection_params["uri"])
     # List files to insert
