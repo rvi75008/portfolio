@@ -56,7 +56,7 @@ class Connector:
         ]
 
 
-async def main():
+async def main() -> None:
 
     with open("config/extraction_config.yaml") as f:
         extraction_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -66,6 +66,10 @@ async def main():
     ]
     connector = Connector(datasources=datasources)
     await connector.extract_data("data/", ",")
+
+
+def run_extraction() -> None:
+    asyncio.run(main())  # pragma: no cover
 
 
 if __name__ == "__main__":

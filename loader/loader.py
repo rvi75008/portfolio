@@ -81,5 +81,9 @@ async def main(input_dir: str):
         ]
 
 
+def run_loading() -> None:
+    asyncio.run(main("data"))  # pragma: no cover
+
+
 if __name__ == "__main__":
     asyncio.run(main("data"))  # pragma: no cover
