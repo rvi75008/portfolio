@@ -1,13 +1,10 @@
-from typing import Dict
-
-from pydantic import BaseSettings
+from pydantic import BaseSettings # type: ignore
 
 
 class Settings(BaseSettings):
-    STAGING_DIRECTORY: str = "data"
-    SUCCESSFUL_INGESTION_DIR: str = "ingested"
+    STAGING_DIRECTORY: str = "data/"
+    SUCCESSFUL_INGESTION_DIR: str = "inserted"
     UNSUCCESSFUL_INGESTION_DIR: str = "aborted"
-    EXTRACTION_CONFIGURATION: Dict[str, str] = {}
     LOADER_CONNECTION_URI: str = ""
 
     class Config:

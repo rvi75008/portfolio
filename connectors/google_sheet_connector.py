@@ -4,6 +4,7 @@ from typing import Dict, List, Optional
 
 import httpx
 import pandas as pd
+import yaml
 
 from config.config import settings
 from connectors.helpers.extraction_helpers import clean_df
@@ -53,14 +54,16 @@ class Connector:
 
 
 async def main() -> None:
-    datasources = [
-        DataSource(
-            settings.EXTRACTION_CONFIGURATION["spreadsheet_id"],
-            sheet,
-            transformations[sheet],
-        )
-        for sheet in settings.EXTRACTION_CONFIGURATION["sheet_names"]
-    ]
+    with open("config/extraction_config.yaml") as f:
+        extraction_config = yaml.load(f, Loader=yaml.FullLoader)
+        datasources = [
+            DataSource(
+                extraction_config["spreadsheet_id"],
+                sheet,
+                transformations[sheet],
+            )
+            for sheet in extraction_config["sheet_names"]
+        ]
     connector = Connector(datasources=datasources)
     await connector.extract_data(settings.STAGING_DIRECTORY, ",")
 
