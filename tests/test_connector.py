@@ -4,6 +4,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 from pytest_mock import MockFixture
 
+from config import config
 from connectors.google_sheet_connector import Connector, DataSource, main
 
 
@@ -70,10 +71,10 @@ async def test_main(mocker: MockFixture, connector: Connector) -> None:
         "connectors.google_sheet_connector.transformations",
         return_value={"retails": {}, "dente": {}},
     )
-    mocker.patch(
-        "connectors.google_sheet_connector.yaml.load",
-        return_value={"spreadsheet_id": 12, "sheet_names": ["foo", "bar"]},
-    )
+    config.settings.EXTRACTION_CONFIGURATION = {
+        "spreadsheet_id": 12,
+        "sheet_names": ["foo", "bar"],
+    }
     mock = AsyncMock()
     mocker.patch("connectors.google_sheet_connector.Connector", return_value=mock)
 

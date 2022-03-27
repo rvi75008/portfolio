@@ -4,8 +4,8 @@ from typing import Dict, List, Optional
 
 import httpx
 import pandas as pd
-import yaml
 
+from config.config import settings
 from connectors.helpers.extraction_helpers import clean_df
 from connectors.helpers.transformation_config import transformations  # type: ignore
 
@@ -23,10 +23,6 @@ class DataSource:
 
     def build_url(self):
         return f"https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}/gviz/tq?tqx=out:csv&sheet={self.sheet}"
-
-
-class DataSourcesNotSet(Exception):
-    """"""
 
 
 class Connector:
@@ -57,15 +53,16 @@ class Connector:
 
 
 async def main() -> None:
-
-    with open("config/extraction_config.yaml") as f:
-        extraction_config = yaml.load(f, Loader=yaml.FullLoader)
     datasources = [
-        DataSource(extraction_config["spreadsheet_id"], sheet, transformations[sheet])
-        for sheet in extraction_config["sheet_names"]
+        DataSource(
+            settings.EXTRACTION_CONFIGURATION["spreadsheet_id"],
+            sheet,
+            transformations[sheet],
+        )
+        for sheet in settings.EXTRACTION_CONFIGURATION["sheet_names"]
     ]
     connector = Connector(datasources=datasources)
-    await connector.extract_data("data/", ",")
+    await connector.extract_data(settings.STAGING_DIRECTORY, ",")
 
 
 def run_extraction() -> None:
