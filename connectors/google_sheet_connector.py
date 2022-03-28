@@ -54,7 +54,7 @@ class Connector:
 
 
 async def main() -> None:
-    with open("config/extraction_config.yaml") as f:
+    with open(settings.EXTRACTION_CONFIG) as f:
         extraction_config = yaml.load(f, Loader=yaml.FullLoader)
         datasources = [
             DataSource(

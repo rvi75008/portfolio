@@ -4,6 +4,9 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
+import os
+
+os.chdir(os.environ['DBT_PROFILES_DIR'])
 
 with DAG(dag_id='ELT', start_date=datetime(2022, 1, 1, 12, 0, 0), schedule_interval="@daily", catchup=False) as dag:
     extraction = PythonOperator(

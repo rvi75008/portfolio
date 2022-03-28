@@ -1,4 +1,4 @@
-from pydantic import BaseSettings # type: ignore
+from pydantic import BaseSettings  # type: ignore
 
 
 class Settings(BaseSettings):
@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     SUCCESSFUL_INGESTION_DIR: str = "inserted"
     UNSUCCESSFUL_INGESTION_DIR: str = "aborted"
     LOADER_CONNECTION_URI: str = ""
+    EXTRACTION_CONFIG: str = "/src/config/extraction_config.yaml"
 
     class Config:
         case_sensitive = True
