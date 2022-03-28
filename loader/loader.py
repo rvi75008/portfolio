@@ -5,15 +5,13 @@ import os
 import shutil
 from abc import ABC
 from datetime import datetime
-from typing import Optional
 
 import aiofiles
 import pandas as pd
-import yaml
-from psycopg2 import DatabaseError, OperationalError, pool
+from psycopg2 import DatabaseError, OperationalError
 from sqlalchemy import create_engine
 
-connection_pool: Optional[pool.SimpleConnectionPool] = None
+from config.config import settings
 
 
 class Loader(ABC):
@@ -57,29 +55,37 @@ class AsyncPostgresLoader(PostgresLoader):
 
 
 async def main(input_dir: str):
-    with open("config/connection_params.yml") as f:
-        connection_params = yaml.load(f, Loader=yaml.FullLoader)
-    async_postgres_loader = AsyncPostgresLoader(connection_params["uri"])
+    async_postgres_loader = AsyncPostgresLoader(settings.LOADER_CONNECTION_URI)
     # List files to insert
-    files_to_insert = [f"{input_dir}/{f}" for f in os.listdir("data")]
+    files_to_insert = [f"{input_dir}/{f}" for f in os.listdir(input_dir)]
     try:
         await asyncio.gather(
             *[async_postgres_loader.async_load(file) for file in files_to_insert]
         )
         [
-            shutil.move(f, f'inserted/{f.split("/")[-1]}_{datetime.now()}')
+            shutil.move(
+                f,
+                f'{settings.SUCCESSFUL_INGESTION_DIR}/{f.split("/")[-1]}_{datetime.now()}',
+            )
             for f in files_to_insert
         ]
         async_postgres_loader.logger.info(
-            "Files inserted into db and moved to /inserted"
+            f"Files inserted into db and moved to {settings.SUCCESSFUL_INGESTION_DIR}"
         )
     except (OSError, InsertionError) as e:
         async_postgres_loader.logger.error(f"Error during insertion: {e}")
         [  # pragma: no cover
-            shutil.move(f, f'aborted/{f.split("/")[-1]}_{datetime.now()}')
+            shutil.move(
+                f,
+                f'{settings.UNSUCCESSFUL_INGESTION_DIR}/{f.split("/")[-1]}_{datetime.now()}',
+            )
             for f in files_to_insert
         ]
 
 
+def run_loading() -> None:
+    asyncio.run(main(settings.STAGING_DIRECTORY))  # pragma: no cover
+
+
 if __name__ == "__main__":
-    asyncio.run(main("data"))  # pragma: no cover
+    asyncio.run(main(settings.STAGING_DIRECTORY))  # pragma: no cover

@@ -1,9 +1,10 @@
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 from pytest_httpx import HTTPXMock
 from pytest_mock import MockFixture
 
+from config.config import settings
 from connectors.google_sheet_connector import Connector, DataSource, main
 
 

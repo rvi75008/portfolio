@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     name='portfolio',
     version='',
-    packages=['tests', 'loader', 'connectors', 'connectors.helpers'],
+    packages=find_packages(include=['tests', 'loader', 'connectors', 'connectors.helpers', 'config']),
     url='https://github.com/rvi75008/portfolio',
     license='',
     author='raphael',
