@@ -11,22 +11,24 @@ os.chdir(os.environ['DBT_PROFILES_DIR'])
 with DAG(dag_id='ELT', start_date=datetime(2022, 1, 1, 12, 0, 0), schedule_interval="@daily", catchup=False) as dag:
     extraction = PythonOperator(
         task_id='extract_data',
-        python_callable=run_extraction
+        python_callable=run_extraction,
+        retries=3
     )
 
     loading = PythonOperator(
         task_id='load_data',
-        python_callable=run_loading
+        python_callable=run_loading,
+        retries=3
     )
 
     transforming = BashOperator(
         task_id='transform_data',
-        bash_command='dbt run'
+        bash_command='dbt run --project-dir /dbt'
     )
 
     data_quality_checking = BashOperator(
         task_id='check_data_quality',
-        bash_command='dbt test'
+        bash_command='dbt test --project-dir /dbt'
     )
 
 

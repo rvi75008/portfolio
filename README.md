@@ -1,7 +1,7 @@
-1/ Tester le flow avec airflow "dev" dans le container 
-2/ Faire une image docker 'prod' avec une vrai db et un vrai executor + docker compose
-3/ Voir pour déployer sur un cloud
-
+1/ Utiliser une DB postgres pour airflow, change l'executor
+2/ Différencer environnement de dev & de prod dans dbt (prévoir une db 'data/dev' et une db 'data/prod' différente) 
+3/ Utiliser dbt dans la CI Github
+4/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
 
 # Démarrer les services
 ```
