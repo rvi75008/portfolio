@@ -20,7 +20,6 @@ ENV STAGING_DIRECTORY ${DATA_DIR}/staging/
 ENV SUCCESSFUL_INGESTION_DIR ${DATA_DIR}/inserted/
 ENV UNSUCCESSFUL_INGESTION_DIR ${DATA_DIR}/aborted/
 
-
 RUN mkdir $DATA_DIR
 RUN mkdir $STAGING_DIRECTORY
 RUN mkdir $SUCCESSFUL_INGESTION_DIR
@@ -37,6 +36,6 @@ RUN python -m pip install .
 WORKDIR ./dbt
 CMD ["sh", "-c", "dbt compile"]
 EXPOSE 8080
-WORKDIR ./src
+WORKDIR /src
 CMD ["sh", "-c", "airflow db init"]
 CMD ["sh", "-c", "airflow standalone"]

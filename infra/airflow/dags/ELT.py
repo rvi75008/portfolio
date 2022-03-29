@@ -5,6 +5,7 @@ from airflow.operators.bash import BashOperator
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
 import os
+from datetime import timedelta
 
 os.chdir(os.environ['DBT_PROFILES_DIR'])
 
@@ -12,13 +13,15 @@ with DAG(dag_id='ELT', start_date=datetime(2022, 1, 1, 12, 0, 0), schedule_inter
     extraction = PythonOperator(
         task_id='extract_data',
         python_callable=run_extraction,
-        retries=3
+        retries=3,
+        retry_delay=timedelta(seconds=10)
     )
 
     loading = PythonOperator(
         task_id='load_data',
         python_callable=run_loading,
-        retries=3
+        retries=3,
+        retry_delay=timedelta(seconds=10)
     )
 
     transforming = BashOperator(
