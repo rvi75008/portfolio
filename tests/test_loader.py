@@ -18,7 +18,7 @@ def io_mocks(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=["fake_file.csv"])
     mocker.patch("loader.loader.shutil.move")
     current_dir = os.getcwd()
-    with open(f"{current_dir}/data/fake_file.csv", "w") as f:
+    with open(f"{current_dir}/fake_file.csv", "w") as f:
         f.write("bar,foo\n2, 1\n")
 
 
@@ -48,7 +48,7 @@ async def test_loader(
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     config.settings.LOADER_CONNECTION_URI = connection_string
     config.settings.LOADER_CONNECTION_URI_PROD = connection_string
-    await main("data/", "fake_file.csv")
+    await main("", "fake_file.csv")
     assert pd.read_sql(
         "select * from fake_file_stg;", create_engine(connection_string)
     ).to_dict() == {"bar": {0: 2}, "foo": {0: 1}}
@@ -61,5 +61,5 @@ async def test_loader_error(
     mocker.patch("loader.loader.pd.DataFrame.to_sql", side_effect=OperationalError)
     mocklogger = MagicMock()
     mocker.patch("loader.loader.logging.getLogger", return_value=mocklogger)
-    await main("data/", "tests")
+    await main("", "tests")
     assert mocklogger.error.call_count == 2
