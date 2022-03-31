@@ -8,7 +8,7 @@ portfolio:
       threads: 1
       host: "{{ env_var('DBT_DB') }}"
       port: 5432
-      user: dbt
+      user: dbtdev
       pass: "{{ env_var('DBT_PASSWORD') }}"
       dbname: dbt
       schema: dev
@@ -17,7 +17,7 @@ portfolio:
       threads: 1
       host: "{{ env_var('DBT_DB') }}"
       port: 5432
-      user: dbt
+      user: dbtprod
       pass: "{{ env_var('DBT_PASSWORD') }}"
       dbname: dbt
       schema: prod

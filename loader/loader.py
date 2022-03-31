@@ -58,11 +58,11 @@ class AsyncPostgresLoader(PostgresLoader):
 async def main(input_dir: str, target: Optional[str] = None):
     async_postgres_loader = AsyncPostgresLoader(
         settings.LOADER_CONNECTION_URI
-        if target == "dev"
+        if target == "development"
         else settings.LOADER_CONNECTION_URI_PROD
     )
     # List files to insert
-    files_to_insert = [f"{input_dir}/{f}" for f in os.listdir(input_dir)]
+    files_to_insert = [f"{input_dir}{f}" for f in os.listdir(input_dir)]
     success_dir = (
         f"/{target}/{settings.SUCCESSFUL_INGESTION_DIR}"
         if target
@@ -98,13 +98,15 @@ async def main(input_dir: str, target: Optional[str] = None):
         ]
 
 
-def run_loading(target: Optional[str] = "dev") -> None:
+def run_loading(target: Optional[str] = "development") -> None:
     asyncio.run(
-        main(f"{target}/{settings.STAGING_DIRECTORY}", target)
+        main(f"/{target}/{settings.STAGING_DIRECTORY}", target)
         if target
         else main(settings.STAGING_DIRECTORY)
     )  # pragma: no cover
 
 
 if __name__ == "__main__":
-    asyncio.run(main(f"/dev/{settings.STAGING_DIRECTORY}", "dev"))  # pragma: no cover
+    asyncio.run(
+        main(f"/development/{settings.STAGING_DIRECTORY}", "development")
+    )  # pragma: no cover

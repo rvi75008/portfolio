@@ -55,7 +55,9 @@ class Connector:
 
 async def main(target: Optional[str]) -> None:
     with open(settings.EXTRACTION_CONFIG) as f:
-        extraction_config = yaml.load(f, Loader=yaml.FullLoader)[target]
+        extraction_config = yaml.load(f, Loader=yaml.FullLoader)[
+            target if target else "prod"
+        ]
         datasources = [
             DataSource(
                 extraction_config["spreadsheet_id"],
@@ -73,9 +75,9 @@ async def main(target: Optional[str]) -> None:
     )
 
 
-def run_extraction(target: Optional[str] = "dev") -> None:
+def run_extraction(target: Optional[str] = "development") -> None:
     asyncio.run(main(target))  # pragma: no cover
 
 
 if __name__ == "__main__":
-    asyncio.run(main("dev"))  # pragma: no cover
+    asyncio.run(main("development"))  # pragma: no cover
