@@ -43,6 +43,8 @@ async def test_loader(
 ) -> None:
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     config.settings.LOADER_CONNECTION_URI = connection_string
+    config.settings.LOADER_CONNECTION_URI_PROD = connection_string
+
     await main("tests")
     assert pd.read_sql(
         "select * from fake_file_stg;", create_engine(connection_string)
