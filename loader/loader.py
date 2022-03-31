@@ -5,6 +5,7 @@ import os
 import shutil
 from abc import ABC
 from datetime import datetime
+from typing import Optional
 
 import aiofiles
 import pandas as pd
@@ -54,10 +55,24 @@ class AsyncPostgresLoader(PostgresLoader):
             self.load(data, file)
 
 
-async def main(input_dir: str):
-    async_postgres_loader = AsyncPostgresLoader(settings.LOADER_CONNECTION_URI)
+async def main(input_dir: str, target: Optional[str] = None):
+    async_postgres_loader = AsyncPostgresLoader(
+        settings.LOADER_CONNECTION_URI
+        if target == "development"
+        else settings.LOADER_CONNECTION_URI_PROD
+    )
     # List files to insert
-    files_to_insert = [f"{input_dir}/{f}" for f in os.listdir(input_dir)]
+    files_to_insert = [f"{input_dir}{f}" for f in os.listdir(input_dir)]
+    success_dir = (
+        f"/{target}/{settings.SUCCESSFUL_INGESTION_DIR}"
+        if target
+        else settings.SUCCESSFUL_INGESTION_DIR
+    )
+    failure_dir = (
+        f"/{target}/{settings.SUCCESSFUL_INGESTION_DIR}"
+        if target
+        else settings.UNSUCCESSFUL_INGESTION_DIR
+    )
     try:
         await asyncio.gather(
             *[async_postgres_loader.async_load(file) for file in files_to_insert]
@@ -65,27 +80,33 @@ async def main(input_dir: str):
         [
             shutil.move(
                 f,
-                f'{settings.SUCCESSFUL_INGESTION_DIR}/{f.split("/")[-1]}_{datetime.now()}',
+                f'{success_dir}/{f.split("/")[-1]}_{datetime.now()}',
             )
             for f in files_to_insert
         ]
         async_postgres_loader.logger.info(
-            f"Files inserted into db and moved to {settings.SUCCESSFUL_INGESTION_DIR}"
+            f"Files inserted into db and moved to {success_dir}"
         )
     except (OSError, InsertionError) as e:
         async_postgres_loader.logger.error(f"Error during insertion: {e}")
         [  # pragma: no cover
             shutil.move(
                 f,
-                f'{settings.UNSUCCESSFUL_INGESTION_DIR}/{f.split("/")[-1]}_{datetime.now()}',
+                f'{failure_dir}/{f.split("/")[-1]}_{datetime.now()}',
             )
             for f in files_to_insert
         ]
 
 
-def run_loading() -> None:
-    asyncio.run(main(settings.STAGING_DIRECTORY))  # pragma: no cover
+def run_loading(target: Optional[str] = "development") -> None:
+    asyncio.run(
+        main(f"/{target}/{settings.STAGING_DIRECTORY}", target)
+        if target
+        else main(settings.STAGING_DIRECTORY)
+    )  # pragma: no cover
 
 
 if __name__ == "__main__":
-    asyncio.run(main(settings.STAGING_DIRECTORY))  # pragma: no cover
+    asyncio.run(
+        main(f"/development/{settings.STAGING_DIRECTORY}", "development")
+    )  # pragma: no cover

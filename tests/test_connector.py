@@ -73,10 +73,10 @@ async def test_main(mocker: MockFixture, connector: Connector) -> None:
     )
     mocker.patch(
         "connectors.google_sheet_connector.yaml.load",
-        return_value={"spreadsheet_id": 12, "sheet_names": ["foo", "bar"]},
+        return_value={"dev": {"spreadsheet_id": 12, "sheet_names": ["foo", "bar"]}},
     )
     mock = AsyncMock()
     mocker.patch("connectors.google_sheet_connector.Connector", return_value=mock)
 
-    await main()
+    await main("dev")
     assert mock.extract_data.call_count == 1

@@ -53,9 +53,11 @@ class Connector:
         ]
 
 
-async def main() -> None:
+async def main(target: Optional[str]) -> None:
     with open(settings.EXTRACTION_CONFIG) as f:
-        extraction_config = yaml.load(f, Loader=yaml.FullLoader)
+        extraction_config = yaml.load(f, Loader=yaml.FullLoader)[
+            target if target else "prod"
+        ]
         datasources = [
             DataSource(
                 extraction_config["spreadsheet_id"],
@@ -65,12 +67,17 @@ async def main() -> None:
             for sheet in extraction_config["sheet_names"]
         ]
     connector = Connector(datasources=datasources)
-    await connector.extract_data(settings.STAGING_DIRECTORY, ",")
+    await connector.extract_data(
+        f"/{target}/{settings.STAGING_DIRECTORY}"
+        if target
+        else settings.STAGING_DIRECTORY,
+        ",",
+    )
 
 
-def run_extraction() -> None:
-    asyncio.run(main())  # pragma: no cover
+def run_extraction(target: Optional[str] = "development") -> None:
+    asyncio.run(main(target))  # pragma: no cover
 
 
 if __name__ == "__main__":
-    asyncio.run(main())  # pragma: no cover
+    asyncio.run(main("development"))  # pragma: no cover

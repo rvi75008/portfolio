@@ -1,8 +1,6 @@
-1/ Utiliser une DB postgres pour airflow change l'executor
-2/ Différencier l'utilisation du dag dev vs prod & adapter connector (I/O dirs), loader (schema destination) et inserted/aborted, et DAG via https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html#dynamic-dags-with-environment-variables
-3/ Faire deux schéma dbt différent -> Dev/Prod
-4/ Utiliser dbt dans la CI Github
-5/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
+1/ Utiliser dbt dans la CI Github
+2/ Préparer déploiement dans le cloud 
+3/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
 
 # Démarrer les services
 ```

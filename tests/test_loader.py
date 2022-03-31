@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock
+import os
+from unittest.mock import AsyncMock, MagicMock
 
 import docker as docker
 import pandas as pd
@@ -16,7 +17,9 @@ from loader.loader import main
 def io_mocks(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=["fake_file.csv"])
     mocker.patch("loader.loader.shutil.move")
-    mocker.patch("loader.loader.open")
+    current_dir = os.getcwd()
+    with open(f"{current_dir}/fake_file.csv", "w") as f:
+        f.write("bar,foo\n2, 1\n")
 
 
 @pytest.fixture(scope="module")
@@ -39,11 +42,13 @@ def postgres_server(service_container) -> docker.DockerClient:
 
 @pytest.mark.asyncio
 async def test_loader(
-    postgres_server: docker.DockerClient, io_mocks: MockFixture
+    postgres_server: docker.DockerClient,
+    io_mocks: MockFixture,
 ) -> None:
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     config.settings.LOADER_CONNECTION_URI = connection_string
-    await main("tests")
+    config.settings.LOADER_CONNECTION_URI_PROD = connection_string
+    await main("", "fake_file.csv")
     assert pd.read_sql(
         "select * from fake_file_stg;", create_engine(connection_string)
     ).to_dict() == {"bar": {0: 2}, "foo": {0: 1}}
@@ -54,8 +59,7 @@ async def test_loader_error(
     mocker: MockFixture, postgres_server: docker.DockerClient, io_mocks: MockFixture
 ) -> None:
     mocker.patch("loader.loader.pd.DataFrame.to_sql", side_effect=OperationalError)
-    connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     mocklogger = MagicMock()
     mocker.patch("loader.loader.logging.getLogger", return_value=mocklogger)
-    await main("tests")
+    await main("", "tests")
     assert mocklogger.error.call_count == 2
