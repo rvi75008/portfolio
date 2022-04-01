@@ -44,6 +44,32 @@ jobs:
     - name: test
       run: make test
 
+    - name: dbt deps
+      uses: mwhitaker/dbt-action@master
+      with:
+        dbt_command: "dbt deps"
+
+    - name: dbt run
+      uses: mwhitaker/dbt-action@master
+      with:
+        dbt_command: "dbt run --profiles-dir tests/ -t dev"
+      env:
+        DBT_USER: ${{ secrets.DBT_USER }}
+        DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+
+    - name: dbt run
+      uses: mwhitaker/dbt-action@master
+      with:
+        dbt_command: "dbt test --profiles-dir tests/ -t dev"
+      env:
+        DBT_USER: ${{ secrets.DBT_USER }}
+        DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+
+    - name: Get the dbt result
+      if: ${{ always() }}
+      run: echo "${{ steps.dbt-run.outputs.result }}"
+      shell: bash
+
     - name: SonarCloud Scan
       # Only executed for one of the tested python version
       if: ${{ always() && matrix['python-version'] == 3.8 }}

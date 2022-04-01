@@ -1,0 +1,12 @@
+# profiles.yml
+portfolio:
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: _user_      # this will be substituted during build time
+      pass: _password_  # this will be substituted during build time
+      port: 5432
+      dbname: tutorial
+      schema: dbt_tutorial
+  target: dev
