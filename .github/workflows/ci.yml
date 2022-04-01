@@ -54,16 +54,16 @@ jobs:
       with:
         dbt_command: "dbt run --profiles-dir tests/ -t dev"
       env:
-        DBT_USER: ${{ secrets.DBT_USER }}
-        DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+        DBT_USER: dbtdev
+        DBT_PASSWORD: passwordpassword
 
     - name: dbt run
       uses: mwhitaker/dbt-action@master
       with:
         dbt_command: "dbt test --profiles-dir tests/ -t dev"
       env:
-        DBT_USER: ${{ secrets.DBT_USER }}
-        DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+        DBT_USER: dbtdev
+        DBT_PASSWORD: passwordpassword
 
     - name: Get the dbt result
       if: ${{ always() }}
