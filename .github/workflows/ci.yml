@@ -32,24 +32,27 @@ jobs:
         path: /var/lib/docker/overlay2
         key: ${{ runner.os }}-docker-images
 
-    - name: install
+    - name: Install
       run: make install
 
     - name: Pulling all docker images
       run: docker-compose -f tests/docker-compose.yml pull
 
-    - name: lint
+    - name: Lint
       run: make lint
 
-    - name: test
+    - name: Test
       run: make test
 
-    - name: dbt deps
+    - name: Dbt deps
       uses: mwhitaker/dbt-action@master
       with:
         dbt_command: "dbt deps"
 
-    - name: dbt run
+    - name: Start dbt db
+      run: docker-compose -f "tests/dbt-docker-compose.yml" up -d
+
+    - name: Dbt run
       uses: mwhitaker/dbt-action@master
       with:
         dbt_command: "dbt run --profiles-dir tests/ -t dev"
@@ -57,13 +60,17 @@ jobs:
         DBT_USER: dbtdev
         DBT_PASSWORD: passwordpassword
 
-    - name: dbt run
+    - name: Dbt test
       uses: mwhitaker/dbt-action@master
       with:
         dbt_command: "dbt test --profiles-dir tests/ -t dev"
       env:
         DBT_USER: dbtdev
         DBT_PASSWORD: passwordpassword
+
+    - name: Stop dbt db
+      if: always()
+      run: docker-compose -f "tests/dbt-docker-compose.yml" down
 
     - name: Get the dbt result
       if: ${{ always() }}

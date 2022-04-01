@@ -6,6 +6,8 @@ GRANT ALL PRIVILEGES ON SCHEMA dev to dbtdev;
 
 
 BEGIN;
+SET client_encoding = 'LATIN1';
+SET search_path TO dbtdev;
 CREATE TABLE details_stg ("Actif" text, "Valorisation €" double precision, date text, day text);
 CREATE TABLE rente_stg ("action" text, "Dvidende Estimé" double precision, date text, day text);
 

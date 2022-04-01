@@ -1,0 +1,11 @@
+postgres:
+  image: postgres
+  environment:
+    - POSTGRES_DB=dbt
+    - POSTGRES_USER=dbtdev
+    - POSTGRES_PASSWORD=password1234
+    - POSTGRES_INITDB_ARGS="--auth=md5"
+  ports:
+    - 5432:5432
+  volumes:
+    - ./tests/test_db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
