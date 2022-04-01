@@ -44,38 +44,42 @@ jobs:
     - name: Test
       run: make test
 
-    - name: Dbt deps
-      uses: mwhitaker/dbt-action@master
-      with:
-        dbt_command: "dbt deps"
+    - name: Copy Dbt models files
+      run: cp -r models/ tests/models/
 
     - name: Start dbt db
-      run: docker-compose -f "tests/dbt-docker-compose.yml" up -d
+      working-directory: ./tests
+      run: docker-compose -f "dbt-docker-compose.yml" up -d postgres-test
+
+    - name: Dbt deps
+      working-directory: ./tests
+      run: "dbt deps --profiles-dir . -t dev"
+
+    - name: Dbt compile
+      working-directory: ./tests
+      run: "dbt compile --profiles-dir . -t dev"
+      env:
+        DBT_USER: dbtdev
+        DBT_PASSWORD: passwordpassword
 
     - name: Dbt run
-      uses: mwhitaker/dbt-action@master
-      with:
-        dbt_command: "dbt run --profiles-dir tests/ -t dev"
+      working-directory: ./tests
+      run: "dbt run --profiles-dir . -t dev"
       env:
         DBT_USER: dbtdev
         DBT_PASSWORD: passwordpassword
 
     - name: Dbt test
-      uses: mwhitaker/dbt-action@master
-      with:
-        dbt_command: "dbt test --profiles-dir tests/ -t dev"
+      working-directory: ./tests
+      run: "dbt test --profiles-dir . -t dev"
       env:
         DBT_USER: dbtdev
         DBT_PASSWORD: passwordpassword
 
     - name: Stop dbt db
       if: always()
-      run: docker-compose -f "tests/dbt-docker-compose.yml" down
-
-    - name: Get the dbt result
-      if: ${{ always() }}
-      run: echo "${{ steps.dbt-run.outputs.result }}"
-      shell: bash
+      working-directory: ./tests
+      run: docker-compose -f "dbt-docker-compose.yml" down
 
     - name: SonarCloud Scan
       # Only executed for one of the tested python version

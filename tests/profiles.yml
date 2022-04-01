@@ -4,9 +4,9 @@ portfolio:
     dev:
       type: postgres
       host: localhost
-      user: _user_      # this will be substituted during build time
-      pass: _password_  # this will be substituted during build time
+      user: dbtdev      # this will be substituted during build time
+      pass: password1234  # this will be substituted during build time
       port: 5432
-      dbname: tutorial
-      schema: dbt_tutorial
+      dbname: dbt
+      schema: dev
   target: dev

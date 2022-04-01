@@ -1,5 +1,7 @@
-postgres:
+postgres-test:
   image: postgres
+  volumes:
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   environment:
     - POSTGRES_DB=dbt
     - POSTGRES_USER=dbtdev
@@ -7,5 +9,3 @@ postgres:
     - POSTGRES_INITDB_ARGS="--auth=md5"
   ports:
     - 5432:5432
-  volumes:
-    - ./tests/test_db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
