@@ -34,3 +34,11 @@ install:
 .PHONY: doc
 doc:
 	dbt docs generate
+
+.PHONY: build
+build:
+	docker build --tag raphaelvignes/portfolio:latest --file Dockerfile .
+
+.PHONY: push-image
+push-image:
+        docker push raphaelvignes/portfolio:latest
