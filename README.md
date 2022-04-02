@@ -3,7 +3,7 @@
 3/ Brancher sur une app de dataviz (Toucan)
 
 # Archi
-![image](https://user-images.githubusercontent.com/82377798/161382737-985d3160-ea4d-4b5d-b382-e82dca9c9062.png)
+![image](https://user-images.githubusercontent.com/82377798/161383439-889080a5-80eb-471d-967c-fa7ca56cc7a0.png)
 
 # Démarrer les services
 ```
