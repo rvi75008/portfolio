@@ -55,13 +55,6 @@ jobs:
       working-directory: ./tests
       run: "dbt deps --profiles-dir . -t dev"
 
-    - name: Dbt compile
-      working-directory: ./tests
-      run: "dbt compile --profiles-dir . -t dev"
-      env:
-        DBT_USER: dbtdev
-        DBT_PASSWORD: passwordpassword
-
     - name: Dbt run
       working-directory: ./tests
       run: "dbt run --profiles-dir . -t dev"

@@ -6,10 +6,10 @@ GRANT ALL PRIVILEGES ON SCHEMA dev to dbtdev;
 BEGIN;
 SET client_encoding = 'LATIN1';
 SET search_path TO 'dev';
-CREATE TABLE details_stg ("Actif" text, "Valorisation €" double precision, date text, day text);
-CREATE TABLE rente_stg ("action" text, "Dvidende Estimé" double precision, date text, day text);
+CREATE TABLE details_stg (actif text, valorisation double precision, date text, day text);
+CREATE TABLE rente_stg (action text, dividende double precision, date text, day text);
 
-COPY details_stg ("Actif", "Valorisation €", date, day) FROM stdin;
+COPY details_stg (actif, valorisation, date, day) FROM stdin;
 OR - 10F	3500	2022-03-31 19:51:41.883599	22-03-31
 AG - 5F	32.5	2022-03-31 19:51:41.883599	22-03-31
 AG - Phil	167.3	2022-03-31 19:51:41.883599	22-03-31
@@ -345,7 +345,7 @@ US 20+ years	29994.5	2022-04-01 18:20:37.232650	22-04-01
 Rubis	324.36	2022-04-01 18:20:37.232650	22-04-01
 \.
 
-COPY rente_stg ("action", "Dvidende Estimé", date, day) FROM stdin;
+COPY rente_stg (action, dividende, date, day) FROM stdin;
 Sanofi	3.33	2022-03-31 19:51:41.883623	22-03-31
 AXA	1.54	2022-03-31 19:51:41.883623	22-03-31
 ABC Arbitrage	0.4	2022-03-31 19:51:41.883623	22-03-31
@@ -448,5 +448,9 @@ Van de Velde	1.4	2022-04-01 18:20:37.232668	22-04-01
 IDI	3.4	2022-04-01 18:20:37.232668	22-04-01
 Rubis	1.8	2022-04-01 18:20:37.232668	22-04-01
 \.
+
+COMMIT;
+ANALYZE details_stg;
+ANALYZE rente_stg;
 
 
