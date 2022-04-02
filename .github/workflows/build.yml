@@ -21,4 +21,3 @@ jobs:
         with:
           push: true
           tags: raphaelvignes/portfolio:latest
-          secrets: LOADER_CONNECTION_URI_PROD=${{ secrets.LOADER_CONNECTION_URI_PROD }}, AIRFLOW__CORE__SQL_ALCHEMY_CONN=${{ secrets.AIRFLOW__CORE__SQL_ALCHEMY_CONN }}

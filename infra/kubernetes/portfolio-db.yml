@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-db-deployment
+  labels:
+    app: portfolio-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-db
+  template:
+    metadata:
+      labels:
+        app: portfolio-db
+    spec:
+      containers:
+      - name: portfolio-db
+        image: postgres:latest
+        env:
+          - name: POSTGRES_DB
+            value: "postgres"
+          - name: POSTGRES_INITDB_ARGS
+            value: "--auth=md5"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: airflow-db-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-db-secret
+                key: POSTGRES_PASSWORD
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - name: postgres-initdb
+            mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: postgres-initdb
+          configMap:
+            name: portfolio-db-initdb-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portfolio-db-service
+spec:
+  selector:
+    app: portfolio-db
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5432
