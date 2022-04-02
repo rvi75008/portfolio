@@ -32,17 +32,47 @@ jobs:
         path: /var/lib/docker/overlay2
         key: ${{ runner.os }}-docker-images
 
-    - name: install
+    - name: Install
       run: make install
 
     - name: Pulling all docker images
       run: docker-compose -f tests/docker-compose.yml pull
 
-    - name: lint
+    - name: Lint
       run: make lint
 
-    - name: test
+    - name: Test
       run: make test
+
+    - name: Copy Dbt models files
+      run: cp -r models/ tests/models/
+
+    - name: Start dbt db
+      working-directory: ./tests
+      run: docker-compose -f "dbt-docker-compose.yml" up -d postgres-test
+
+    - name: Dbt deps
+      working-directory: ./tests
+      run: "dbt deps --profiles-dir . -t dev"
+
+    - name: Dbt run
+      working-directory: ./tests
+      run: "dbt run --profiles-dir . -t dev"
+      env:
+        DBT_USER: dbtdev
+        DBT_PASSWORD: passwordpassword
+
+    - name: Dbt test
+      working-directory: ./tests
+      run: "dbt test --profiles-dir . -t dev"
+      env:
+        DBT_USER: dbtdev
+        DBT_PASSWORD: passwordpassword
+
+    - name: Stop dbt db
+      if: always()
+      working-directory: ./tests
+      run: docker-compose -f "dbt-docker-compose.yml" down
 
     - name: SonarCloud Scan
       # Only executed for one of the tested python version

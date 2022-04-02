@@ -5,8 +5,8 @@
     )
 }}
 
-select actif, valo, day from (select "Actif" as actif, "Valorisation €" as valo, day, row_number()
-over (partition by "Actif", day order by date DESC) as rank
+select actif, valo, day from (select actif as actif, valorisation as valo, day, row_number()
+over (partition by actif, day order by date DESC) as rank
 from details_stg) sub where rank = 1
 
 {% if is_incremental() %}
