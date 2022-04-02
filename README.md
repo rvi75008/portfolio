@@ -1,4 +1,6 @@
-1/ Préparer déploiement dans le cloud 
+1/ Préparer déploiement dans le cloud:
+  a) Config "Naïve"
+  b) Forwarder les secrets pour créer les utilisateur postgres. variables env + echo dans un fichier sql
 2/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
 3/ Brancher sur une app de dataviz (Toucan)
 
