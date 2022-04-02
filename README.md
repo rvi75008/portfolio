@@ -7,7 +7,7 @@
 # Archi
 ![image](https://user-images.githubusercontent.com/82377798/161383439-889080a5-80eb-471d-967c-fa7ca56cc7a0.png)
 
-# Démarrer les services
+# Démarrer les services localement
 ```
 docker-compose run -d --name airflow-db -e AIRFLOW_DB_PASSWORD= airflow-db
 docker-compose run -d --name portfolio-db -e AIRFLOW_DB_PASSWORD= db
