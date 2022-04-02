@@ -1,8 +1,8 @@
-1/ Préparer déploiement dans le cloud:
-  a) Config "Naïve"
-  b) Forwarder les secrets pour créer les utilisateur postgres. variables env + echo dans un fichier sql
-2/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
-3/ Brancher sur une app de dataviz (Toucan)
+1. Préparer déploiement dans le cloud:
+  a. Config "Naïve"
+  b. Forwarder les secrets pour créer les utilisateur postgres. variables env + echo dans un fichier sql
+2. Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
+3. Brancher sur une app de dataviz (Toucan)
 
 # Archi
 ![image](https://user-images.githubusercontent.com/82377798/161383439-889080a5-80eb-471d-967c-fa7ca56cc7a0.png)
