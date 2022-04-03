@@ -1,9 +1,9 @@
 1. Préparer déploiement dans le cloud:
-  a. Config "Naïve"
-  b. Forwarder les secrets pour créer les utilisateur postgres. variables env + echo dans un fichier sql
+  a. Forwarder les secrets pour créer les utilisateur postgres. variables env + echo dans un fichier sql
 2. Voir pour déployer sur un cloud (déploiement auto après build de l'image -> Action manuelle pour repull l'image ?)
 3. Rajouter job airflow pour dump+compression de la base et stocker dans drive.
 4. Brancher sur une app de dataviz (Toucan)
+5. Créer un repo infra pour azure dans un repo à part 
 
 ## Non Prio
 "Data Mining" en C++: matrices de corélation entre les actifs.
