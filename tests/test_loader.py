@@ -10,10 +10,10 @@ from pytest_mock import MockFixture
 from sqlalchemy import create_engine
 
 from config import config
-from loader.loader import main
+from loader.loader import NoFilesFoundException, main
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=False)
 def io_mocks(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=["fake_file.csv"])
     mocker.patch("loader.loader.shutil.move")
@@ -63,3 +63,10 @@ async def test_loader_error(
     mocker.patch("loader.loader.logging.getLogger", return_value=mocklogger)
     await main("", "tests")
     assert mocklogger.error.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_loader_no_file_to_load(mocker: MockFixture) -> None:
+    mocker.patch("loader.loader.os.listdir", return_value=[])
+    with pytest.raises(NoFilesFoundException):
+        await main("./", "development")
