@@ -41,4 +41,4 @@ build:
 
 .PHONY: push-image
 push-image:
-        docker push raphaelvignes/portfolio:latest
+	docker login && docker push raphaelvignes/portfolio:latest
