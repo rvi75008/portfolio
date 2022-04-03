@@ -4,6 +4,10 @@
 2. Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
 3. Brancher sur une app de dataviz (Toucan)
 
+## No Prio
+"Data Mining" en C++: matrices de corélation entre les actifs.
+
+
 # Archi
 ![image](https://user-images.githubusercontent.com/82377798/161383439-889080a5-80eb-471d-967c-fa7ca56cc7a0.png)
 
