@@ -1,5 +1,5 @@
 1. Tester déploiement cloud "local"
-2. Déployer sur un cloud (déploiement auto après build de l'image -> Action manuelle pour repull l'image ?) -> Créer un repo à part pour la config kubernetes Azure
+2. Déployer sur un cloud (déploiement auto après build de l'image -> Mettre le token dockerhub dans la config?) -> Créer un repo à part pour la config kubernetes Azure
 3. Rajouter Firewall/ratelimiter sur le login
 4. Brancher sur une app de dataviz (Toucan)
 5. Rajouter job airflow pour dump+compression de la base et stocker dans drive.
