@@ -6,6 +6,7 @@
 
 ## Non Prio
 "Data Mining" en C++: matrices de corélation entre les actifs.
+Cacher les résultats de requêtes
 
 
 # Archi
