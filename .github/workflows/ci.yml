@@ -38,6 +38,9 @@ jobs:
     - name: Lint
       run: make lint
 
+    - name: Init test airflow db
+      run: "airflow db init"
+
     - name: Test
       run: make test
 

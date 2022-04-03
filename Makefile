@@ -10,7 +10,7 @@ format:
 
 .PHONY: lint
 lint:
-	flake8 connectors loader config
+	flake8 connectors loader config tests/
 	$(isort) --check-only
 	$(black) --check
 	$(mypy) --explicit-package-bases --namespace-packages
