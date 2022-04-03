@@ -10,7 +10,7 @@
 
 
 # Archi
-![image](https://user-images.githubusercontent.com/82377798/161383439-889080a5-80eb-471d-967c-fa7ca56cc7a0.png)
+![image](https://user-images.githubusercontent.com/82377798/161422137-16dbaf16-9c8c-4489-b3c5-ec8ed6ee2d40.png)
 
 # Démarrer les services localement
 ```
