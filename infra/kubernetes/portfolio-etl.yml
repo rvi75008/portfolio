@@ -28,6 +28,13 @@ spec:
               secretKeyRef:
                 name: portfolio-etl-secret
                 key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+          - name: DBT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-etl-secret
+                key: DBT_PASSWORD
+          - name: DBT_DB
+            value: portfolio-db-service
         ports:
         - containerPort: 8080
 ---
