@@ -14,10 +14,13 @@ models:
     columns:
       - name: actif
         tests:
-          - not_null
+          - not_null:
+              config:
+                where: "day = CAST(current_date as varchar)"
       - name: valo
         tests:
           - not_null
+
   - name: rente
     tests:
       - dbt_utils.unique_combination_of_columns:
@@ -31,7 +34,17 @@ models:
     columns:
       - name: action
         tests:
-          - not_null
+          - not_null:
+              config:
+                where: "day = CAST(current_date as varchar)"
       - name: dividende
         tests:
           - not_null
+
+  - name: portfolio_value
+    columns:
+      - name: valeur_totale
+        tests:
+          - not_null:
+              config:
+                where: "day = CAST(current_date as varchar)"
