@@ -1,12 +1,11 @@
 import socket
 import time
 from contextlib import suppress
-from os import environ, getenv, path
+from os import getenv, path
 
 import pytest
 import yaml
 from docker import APIClient
-from docker.tls import TLSConfig
 from slugify import slugify
 
 

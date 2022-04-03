@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
-isort = isort connectors loader tests config
-black = black connectors loader tests config
+isort = isort connectors loader tests config infra/airflow/dags
+black = black connectors loader tests config infra/airflow/dags
 mypy = mypy connectors loader config
 
 .PHONY: format
@@ -10,7 +10,7 @@ format:
 
 .PHONY: lint
 lint:
-	flake8 connectors loader config
+	flake8 connectors loader config tests/
 	$(isort) --check-only
 	$(black) --check
 	$(mypy) --explicit-package-bases --namespace-packages

@@ -1,9 +1,7 @@
-1. Tester déploiement cloud "local"
-2. Envoyer alerte si dbt check prod failed
-3. Déployer sur un cloud (déploiement auto après build de l'image -> Mettre le token dockerhub dans la config?) -> Créer un repo à part pour la config kubernetes Azure
-4. Rajouter Firewall/ratelimiter sur le login
-5. Brancher sur une app de dataviz (Toucan)
-6. Rajouter job airflow pour dump+compression de la base et stocker dans drive.
+1. Envoyer alerte si dag prod failed
+2. Déployer sur un cloud (déploiement auto après build de l'image -> Mettre le token dockerhub dans la config?) -> Créer un repo à part pour la config kubernetes Azure
+3. Brancher sur une app de dataviz (Toucan)
+4. Rajouter job airflow pour dump+compression de la base et stocker dans drive (voir google drive api avec une key)
 
 
 ## Non Prio

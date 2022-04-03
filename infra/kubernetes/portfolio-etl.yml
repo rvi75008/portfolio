@@ -35,6 +35,11 @@ spec:
                 key: DBT_PASSWORD
           - name: DBT_DB
             value: portfolio-db-service
+          - name: SLACK_URL
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-etl-secret
+                key: SLACK_URL
         ports:
         - containerPort: 8080
 ---
