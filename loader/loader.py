@@ -24,13 +24,17 @@ class InsertionError(Exception):
     pass
 
 
+class NoFilesFoundException(Exception):
+    """"""
+
+
 class PostgresLoader(Loader):
     def __init__(self, connection_uri: str):
         self.connection_uri = connection_uri
         self.logger = logging.getLogger(__name__)
 
     def load(self, data: str, file: str) -> None:
-        table = file.split("/")[-1].split(".")[0]
+        table = file.split("/")[-1].split("#")[0]
         connection = create_engine(self.connection_uri, pool_size=20)
         try:
             pd.read_csv(filepath_or_buffer=io.StringIO(data)).to_sql(
@@ -50,6 +54,7 @@ class AsyncPostgresLoader(PostgresLoader):
         super().__init__(connection_params)
 
     async def async_load(self, file: str) -> None:
+        self.logger.info(f"{datetime.now()}-Loading: {file}")
         async with aiofiles.open(file, mode="r", buffering=1) as f:
             data = await f.read()
             self.load(data, file)
@@ -63,6 +68,8 @@ async def main(input_dir: str, target: Optional[str] = None):
     )
     # List files to insert
     files_to_insert = [f"{input_dir}{f}" for f in os.listdir(input_dir)]
+    if not files_to_insert:
+        raise NoFilesFoundException(f"No file to insert found in {input_dir}")
     success_dir = (
         f"/{target}/{settings.SUCCESSFUL_INGESTION_DIR}"
         if target
@@ -92,7 +99,7 @@ async def main(input_dir: str, target: Optional[str] = None):
         [  # pragma: no cover
             shutil.move(
                 f,
-                f'{failure_dir}/{f.split("/")[-1]}_{datetime.now()}',
+                f'{failure_dir}/{f.split("/")[-1]}_{datetime.now().strftime("%Y-%m-%d_%H:%M:%S")}',
             )
             for f in files_to_insert
         ]

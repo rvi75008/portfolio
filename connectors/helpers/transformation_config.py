@@ -2,11 +2,11 @@ from datetime import datetime
 
 transformations = {
     "details": {
-        "cols": ["Actif", "Valorisation €"],
+        "cols": ["actif", "valorisation"],
         "rows": (0, 100),
         "cleaning": [
             (
-                "Valorisation €",
+                "valorisation",
                 lambda x: float(x.replace(" ", "").replace(",", ".")),
             )
         ],
@@ -18,7 +18,7 @@ transformations = {
     "rente": {
         "cols": [
             "action",
-            "Dvidende Estimé",
+            "dividende",
         ],
         "rows": (0, 100),
         "new_cols": [

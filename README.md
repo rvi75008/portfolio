@@ -1,8 +1,20 @@
-1/ Utiliser dbt dans la CI Github
-2/ Préparer déploiement dans le cloud 
-3/ Voir pour déployer sur un cloud (déploiement auto après build de l'image ?)
+1. Tester déploiement cloud "local"
+2. Envoyer alerte si dbt check prod failed
+3. Déployer sur un cloud (déploiement auto après build de l'image -> Mettre le token dockerhub dans la config?) -> Créer un repo à part pour la config kubernetes Azure
+4. Rajouter Firewall/ratelimiter sur le login
+5. Brancher sur une app de dataviz (Toucan)
+6. Rajouter job airflow pour dump+compression de la base et stocker dans drive.
 
-# Démarrer les services
+
+## Non Prio
+"Data Mining" en C++: matrices de corélation entre les actifs.
+Cacher les résultats de requêtes
+
+
+# Archi
+![image](https://user-images.githubusercontent.com/82377798/161422137-16dbaf16-9c8c-4489-b3c5-ec8ed6ee2d40.png)
+
+# Démarrer les services localement
 ```
 docker-compose run -d --name airflow-db -e AIRFLOW_DB_PASSWORD= airflow-db
 docker-compose run -d --name portfolio-db -e AIRFLOW_DB_PASSWORD= db

@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import io
 from typing import Dict, List, Optional
 
@@ -45,7 +46,7 @@ class Connector:
         extracted_dataframes = await self.async_extract_csvs(decimal=decimal)
         [
             clean_df(extracted_dataframe, datasource.transformation_logic).to_csv(
-                f"{prefix}{datasource.sheet}.csv", index=False
+                f"{prefix}{datasource.sheet}#{datetime.datetime.now()}.csv", index=False
             )
             for extracted_dataframe, datasource in zip(
                 extracted_dataframes, self.datasources

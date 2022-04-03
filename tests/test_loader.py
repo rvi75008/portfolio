@@ -10,10 +10,10 @@ from pytest_mock import MockFixture
 from sqlalchemy import create_engine
 
 from config import config
-from loader.loader import main
+from loader.loader import NoFilesFoundException, main
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=False)
 def io_mocks(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=["fake_file.csv"])
     mocker.patch("loader.loader.shutil.move")
@@ -48,9 +48,9 @@ async def test_loader(
     connection_string = f'postgresql+psycopg2://ubuntu:passwordpassword@localhost:{postgres_server["port"]}/postgres_db'
     config.settings.LOADER_CONNECTION_URI = connection_string
     config.settings.LOADER_CONNECTION_URI_PROD = connection_string
-    await main("", "fake_file.csv")
+    await main("", "fake_file#bla.csv")
     assert pd.read_sql(
-        "select * from fake_file_stg;", create_engine(connection_string)
+        'select * from "fake_file.csv_stg";', create_engine(connection_string)
     ).to_dict() == {"bar": {0: 2}, "foo": {0: 1}}
 
 
@@ -63,3 +63,10 @@ async def test_loader_error(
     mocker.patch("loader.loader.logging.getLogger", return_value=mocklogger)
     await main("", "tests")
     assert mocklogger.error.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_loader_no_file_to_load(mocker: MockFixture) -> None:
+    mocker.patch("loader.loader.os.listdir", return_value=[])
+    with pytest.raises(NoFilesFoundException):
+        await main("./", "development")
