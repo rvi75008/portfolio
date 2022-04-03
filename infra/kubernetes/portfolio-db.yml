@@ -19,7 +19,7 @@ spec:
         image: postgres:latest
         env:
           - name: POSTGRES_DB
-            value: "postgres"
+            value: "dbt"
           - name: POSTGRES_INITDB_ARGS
             value: "--auth=md5"
           - name: POSTGRES_USER
@@ -37,10 +37,16 @@ spec:
         volumeMounts:
           - name: postgres-initdb
             mountPath: /docker-entrypoint-initdb.d
+          - name: portfolio-data
+            mountPath: /var/lib/postgresql/data
       volumes:
         - name: postgres-initdb
           configMap:
             name: portfolio-db-initdb-config
+        - name: portfolio-data
+          persistentVolumeClaim:
+            claimName: portfolio-db-persistent-volume-claim
+
 ---
 apiVersion: v1
 kind: Service
@@ -53,3 +59,30 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5432
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: portfolio-db-persistent-volume
+  labels:
+    type: local
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/psql"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: portfolio-db-persistent-volume-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

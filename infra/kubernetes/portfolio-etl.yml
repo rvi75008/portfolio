@@ -17,6 +17,17 @@ spec:
       containers:
       - name: portfolio-etl
         image: raphaelvignes/portfolio:latest
+        env:
+          - name: LOADER_CONNECTION_URI_PROD
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-etl-secret
+                key: LOADER_CONNECTION_URI_PROD
+          - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-etl-secret
+                key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         ports:
         - containerPort: 8080
 ---
