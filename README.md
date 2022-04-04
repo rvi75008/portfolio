@@ -1,5 +1,6 @@
-1. Envoyer alerte si dag prod failed
-2. Déployer sur un cloud (déploiement auto après build de l'image -> Mettre le token dockerhub dans la config?) -> Créer un repo à part pour la config kubernetes Azure
+1. Deploiement Cloud
+  a. Télécharger kubeconfig scaleway
+  b. Deployer avec Kubectl
 3. Brancher sur une app de dataviz (Toucan)
 4. Rajouter job airflow pour dump+compression de la base et stocker dans drive (voir google drive api avec une key)
 
