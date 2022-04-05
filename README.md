@@ -1,4 +1,4 @@
-1. Data Modelling, rajouter la gestion des champs details.qte, details.pu, details.pru, devise
+1. Data Modelling, rajouter la gestion des champs details.qte, details.pu, details.pru, devise --> Faire une migration
 2. Tuile Dividende "Spot" total/% portefeuille total
 3. Tuile Donut Chart répartition Devise (à croiser avec une cotation EURUSD/EURSGD)
 4. Chart +/- Value
