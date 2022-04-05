@@ -1,8 +1,4 @@
-1. Deploiement Cloud
-  a. Télécharger kubeconfig scaleway
-  b. Deployer avec Kubectl
-3. Brancher sur une app de dataviz (Toucan)
-4. Rajouter job airflow pour dump+compression de la base et stocker dans drive (voir google drive api avec une key)
+1. Rajouter job airflow pour dump+compression de la base et stocker dans drive (voir google drive api avec une key)
 
 
 ## Non Prio
@@ -11,7 +7,7 @@ Cacher les résultats de requêtes
 
 
 # Archi
-![image](https://user-images.githubusercontent.com/82377798/161422137-16dbaf16-9c8c-4489-b3c5-ec8ed6ee2d40.png)
+![image](https://user-images.githubusercontent.com/82377798/161844067-06dcb44d-e573-43cb-bba6-2350cabcc612.png)
 
 # Démarrer les services localement
 ```

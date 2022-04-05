@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-db-deployment
+  labels:
+    app: portfolio-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-db
+  template:
+    metadata:
+      labels:
+        app: portfolio-db
+    spec:
+      containers:
+      - name: portfolio-db
+        image: postgres:latest
+        env:
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          - name: POSTGRES_DB
+            value: "dbt"
+          - name: POSTGRES_INITDB_ARGS
+            value: "--auth=md5"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-db-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: portfolio-db-secret
+                key: POSTGRES_PASSWORD
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - name: postgres-initdb
+            mountPath: /docker-entrypoint-initdb.d
+          - name: portfolio-data
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-initdb
+          configMap:
+            name: portfolio-db-initdb-config
+        - name: portfolio-data
+          persistentVolumeClaim:
+            claimName: portfolio-db-persistent-volume-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portfolio-db-service
+spec:
+  selector:
+    app: portfolio-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: portfolio-db-persistent-volume
+  labels:
+    type: local
+spec:
+  volumeMode: Filesystem
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/psql"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: portfolio-db-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

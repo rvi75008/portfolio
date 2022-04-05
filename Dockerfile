@@ -20,7 +20,7 @@ ENV DEV_DIR=/development
 ENV STAGING_DIRECTORY /${DATA_DIR}/staging/
 ENV SUCCESSFUL_INGESTION_DIR /${DATA_DIR}/inserted/
 ENV UNSUCCESSFUL_INGESTION_DIR /${DATA_DIR}/aborted/
-
+ENV AIRFLOW_UID=1000
 
 RUN mkdir $DATA_DIR
 RUN mkdir $STAGING_DIRECTORY
@@ -35,6 +35,8 @@ ENV PATH="/app/venv/bin:$PATH"
 RUN python -m pip install -U pip==20.2
 RUN python -m pip install -r requirements.txt
 RUN python -m pip install .
+RUN python -m pip install "apache-airflow[celery]==2.2.5" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.2.5/constraints-3.6.txt"
+
 WORKDIR ./dbt
 CMD ["sh", "-c", "dbt compile"]
 EXPOSE 8080
