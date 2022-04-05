@@ -20,7 +20,18 @@ models:
       - name: valo
         tests:
           - not_null
-
+      - name: pu
+        tests:
+          - not_null
+      - name: pru
+        tests:
+          - not_null
+      - name: qte
+        tests:
+          - not_null
+      - name: devise
+        tests:
+          - not_null
   - name: rente
     tests:
       - dbt_utils.unique_combination_of_columns:
