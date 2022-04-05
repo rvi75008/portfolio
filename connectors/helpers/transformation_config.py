@@ -2,7 +2,7 @@ from datetime import datetime
 
 transformations = {
     "details": {
-        "cols": ["actif", "valorisation"],
+        "cols": ["actif", "valorisation", "qte", "pu", "pru", "devise"],
         "rows": (0, 100),
         "cleaning": [
             (
