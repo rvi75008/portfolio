@@ -3,14 +3,13 @@ from typing import Any, Dict, Optional
 import pandas as pd
 
 
-def clean_df(
+def prepare_df_for_insertion(
     df: pd.DataFrame, transformations: Optional[Dict[str, Any]] = None
 ) -> pd.DataFrame:
     if transformations is None:
         transformations = {}  # pragma: no cover
     cols = transformations.get("cols", df.columns)
     rows = transformations.get("rows", (0, len(df)))
-    breakpoint()
     cleaning = transformations.get("cleaning", [])
     new_cols = transformations.get("new_cols", [])
     df = df[cols].iloc[rows[0] : rows[1]]

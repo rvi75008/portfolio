@@ -1,15 +1,15 @@
 import pandas as pd
 from pandas._testing import assert_frame_equal
 
-from connectors.helpers.extraction_helpers import clean_df
+from connectors.helpers.extraction_helpers import prepare_df_for_insertion
 from connectors.helpers.transformation_config import transformations
 
 
 def test_clean_df() -> None:
     test_data = pd.read_csv("tests/data/details_stg.csv", nrows=3)
-    cleaned_df = clean_df(test_data, transformations.get("details"))
+    cleaned_df = prepare_df_for_insertion(test_data, transformations.get("details"))
     assert_frame_equal(
-        cleaned_df,
+        cleaned_df[["actif", "valorisation", "qte", "pu", "pru", "devise", "type"]],
         pd.DataFrame(
             [
                 {
@@ -19,8 +19,7 @@ def test_clean_df() -> None:
                     "pu": 0,
                     "pru": 121.00,
                     "devise": "Metal",
-                    "date": "2022-04-06 07:02:01.512803",
-                    "day": "22-04-06",
+                    "type": "metal",
                 },
                 {
                     "actif": "AG - 5F",
@@ -29,8 +28,6 @@ def test_clean_df() -> None:
                     "pu": 0,
                     "pru": 6,
                     "devise": "Metal",
-                    "date": "2022-04-06 07:02:01.512803",
-                    "day": "22-04-06",
                 },
                 {
                     "actif": "AG - Phil",
@@ -39,8 +36,6 @@ def test_clean_df() -> None:
                     "pu": 0,
                     "pru": 15.2,
                     "devise": "Metal",
-                    "date": "2022-04-06 07:02:01.512803",
-                    "day": "22-04-06",
                 },
             ]
         ),

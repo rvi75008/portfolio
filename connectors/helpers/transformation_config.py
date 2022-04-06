@@ -4,10 +4,14 @@ from typing import Any
 import pandas as pd
 
 
-def prices_or_qte_cleaning(x: Any) -> float:
+def sanitizer(x: Any) -> float:
     if pd.isnull(x):
         return 0
-    return float(x.replace(",", ".").replace("\u202f", ""))
+    return (
+        float(x.replace(" ", "").replace(",", ".").replace("\u202f", ""))
+        if not isinstance(x, float)
+        else x
+    )
 
 
 transformations = {
@@ -15,16 +19,16 @@ transformations = {
         "cols": ["actif", "valorisation", "qte", "pu", "pru", "devise", "type"],
         "rows": (0, 100),
         "cleaning": [
-            ("qte", prices_or_qte_cleaning),
+            ("qte", sanitizer),
             (
                 "valorisation",
-                lambda x: float(x.replace(" ", "").replace(",", ".")),
+                sanitizer,
             ),
             (
                 "pu",
-                prices_or_qte_cleaning,
+                sanitizer,
             ),
-            ("pru", prices_or_qte_cleaning),
+            ("pru", sanitizer),
         ],
         "new_cols": [
             ("date", datetime.now()),
