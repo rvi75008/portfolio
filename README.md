@@ -3,7 +3,7 @@
 3. Tuile Donut Chart répartition Devise (à croiser avec une cotation EURUSD/EURSGD)
 4. Chart +/- Value historique
 5. Chart évolution journalière en%
-
+6. Virer Dags dev
 ## Non Prio
 "Data Mining" en C++: matrices de corélation entre les actifs.
 Cacher les résultats de requêtes
