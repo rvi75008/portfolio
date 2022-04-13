@@ -58,7 +58,7 @@ extraction >> loading >> transforming >> data_quality_checking
 with DAG(
     dag_id="ELT_PROD",
     start_date=datetime(2022, 1, 1, 12, 0, 0),
-    schedule_interval="@daily",
+    schedule_interval="@hourly",
     catchup=False,
     default_args={"owner": "airflow", "on_failure_callback": on_failure_callback},
 ) as dag_prod:
