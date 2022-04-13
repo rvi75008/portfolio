@@ -19,19 +19,19 @@ models:
                 where: "day = CAST(current_date as varchar)"
       - name: valo
         tests:
-          - not_null
+          - dbt_utils.at_least_one
       - name: pu
         tests:
-          - not_null
+          - dbt_utils.at_least_one
       - name: pru
         tests:
-          - not_null
+          - dbt_utils.at_least_one
       - name: qte
         tests:
-          - not_null
+          - dbt_utils.at_least_one
       - name: devise
         tests:
-          - not_null
+          - dbt_utils.at_least_one
   - name: rente
     tests:
       - dbt_utils.unique_combination_of_columns:
