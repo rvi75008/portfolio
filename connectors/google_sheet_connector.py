@@ -8,7 +8,7 @@ import pandas as pd
 import yaml
 
 from config.config import settings
-from connectors.helpers.extraction_helpers import clean_df
+from connectors.helpers.extraction_helpers import prepare_df_for_insertion
 from connectors.helpers.transformation_config import transformations  # type: ignore
 
 
@@ -45,7 +45,9 @@ class Connector:
     async def extract_data(self, prefix: str, decimal: Optional[str]) -> None:
         extracted_dataframes = await self.async_extract_csvs(decimal=decimal)
         [
-            clean_df(extracted_dataframe, datasource.transformation_logic).to_csv(
+            prepare_df_for_insertion(
+                extracted_dataframe, datasource.transformation_logic
+            ).to_csv(
                 f"{prefix}{datasource.sheet}#{datetime.datetime.now()}.csv", index=False
             )
             for extracted_dataframe, datasource in zip(
