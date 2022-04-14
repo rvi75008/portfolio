@@ -1,5 +1,9 @@
+
+## Test
+Rajouter tests dbt sur variations trop grandes
+
 ## Non Prio
-"Data Mining" en C++: matrices de corélation entre les actifs.
+"Data Mining" en C++: monte carlo par categories
 Cacher les résultats de requêtes
 
 
