@@ -82,5 +82,22 @@ def run_simulation():
         cash_injection_over_period=10000,
     )
     output = mcs.simulate()
+    output.columns = [
+        "count",
+        "mean",
+        "std",
+        "min",
+        "bucket0",
+        "bucket10",
+        "bucket20",
+        "bucket30",
+        "bucket40",
+        "bucket50",
+        "bucket60",
+        "bucket70",
+        "bucket80",
+        "bucket90",
+        "max",
+    ]
     loader = AsyncPostgresLoader(settings.LOADER_CONNECTION_URI_PROD)
     loader.load_from_dataframe(output)

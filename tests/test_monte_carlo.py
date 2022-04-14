@@ -17,10 +17,10 @@ def test_montecarlo_simulation_one_asset(mocker: MockFixture) -> None:
         return_value=pd.DataFrame({"val": [6000]}),
     )
     run_simulation()
-    assert mocked_load.call_args_list[0][0][0]["0%"].values.tolist()[0] == 0.0
+    assert mocked_load.call_args_list[0][0][0]["bucket0"].values.tolist()[0] == 0.0
     assert mocked_load.call_args_list[0][0][0]["max"].values.tolist()[0] >= 30000.0
-    assert mocked_load.call_args_list[0][0][0]["50%"].values.tolist()[0] >= 16000.0
-    assert mocked_load.call_args_list[0][0][0]["50%"].values.tolist()[0] <= 25000.0
+    assert mocked_load.call_args_list[0][0][0]["bucket50"].values.tolist()[0] >= 16000.0
+    assert mocked_load.call_args_list[0][0][0]["bucket50"].values.tolist()[0] <= 25000.0
 
 
 def test_montecarlo_simulation_multiple_assets(mocker: MockFixture) -> None:
@@ -33,10 +33,10 @@ def test_montecarlo_simulation_multiple_assets(mocker: MockFixture) -> None:
         return_value=pd.DataFrame({"val": [6000, 4000]}),
     )
     run_simulation()
-    assert mocked_load.call_args_list[0][0][0]["0%"].values.tolist()[0] == 0.0
+    assert mocked_load.call_args_list[0][0][0]["bucket0"].values.tolist()[0] == 0.0
     assert mocked_load.call_args_list[0][0][0]["max"].values.tolist()[0] >= 30000.0
-    assert mocked_load.call_args_list[0][0][0]["50%"].values.tolist()[0] >= 16000.0
-    assert mocked_load.call_args_list[0][0][0]["50%"].values.tolist()[0] <= 25000.0
+    assert mocked_load.call_args_list[0][0][0]["bucket50"].values.tolist()[0] >= 16000.0
+    assert mocked_load.call_args_list[0][0][0]["bucket50"].values.tolist()[0] <= 25000.0
 
 
 def test_montecarlo_simulation_error(mocker: MockFixture) -> None:
