@@ -9,6 +9,8 @@ ADD ./models ./dbt/models
 ADD ./profiles.yml ./dbt/profiles.yml
 ADD ./dbt_packages ./dbt/dbt_packages
 ADD ./dbt_project.yml /dbt/dbt_project.yml
+ADD ./packages.yml /dbt/packages.yml
+ADD ./tests/dbt /dbt/tests
 ADD ./infra/airflow ./airflow
 ENV LOADER_CONNECTION_URI ${LOADER_CONNECTION_URI}
 ENV LOADER_CONNECTION_URI_PROD ${LOADER_CONNECTION_URI_PROD}
@@ -38,6 +40,7 @@ RUN python -m pip install .
 RUN python -m pip install "apache-airflow[celery]==2.2.5" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.2.5/constraints-3.6.txt"
 
 WORKDIR ./dbt
+CMD ["sh", "-c", "dbt deps"]
 CMD ["sh", "-c", "dbt compile"]
 EXPOSE 8080
 WORKDIR /src
