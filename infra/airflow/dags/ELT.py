@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
+from computations.monte_carlo import run_simulation
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
 
@@ -84,4 +85,19 @@ with DAG(
 
     data_quality_checking = BashOperator(
         task_id="check_data_quality", bash_command="dbt test --project-dir /dbt -t prod"
+    )
+
+
+with DAG(
+    dag_id="Montecarlo",
+    start_date=datetime(2022, 1, 1, 19, 0, 0),
+    schedule_interval="@daily",
+    catchup=False,
+    default_args={"owner": "airflow", "on_failure_callback": on_failure_callback},
+) as montecarlo:
+    computations = PythonOperator(
+        task_id="compute_montecarlo",
+        python_callable=run_simulation,
+        retries=3,
+        retry_delay=timedelta(seconds=10),
     )

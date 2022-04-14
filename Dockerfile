@@ -3,12 +3,15 @@ FROM python:3.8
 ADD ./requirements.txt ./src/requirements.txt
 ADD ./connectors ./src/connectors
 ADD ./loader ./src/loader
+ADD ./computations ./src/computations
 ADD ./config ./src/config
 ADD ./setup.py ./src/setup.py
 ADD ./models ./dbt/models
 ADD ./profiles.yml ./dbt/profiles.yml
 ADD ./dbt_packages ./dbt/dbt_packages
 ADD ./dbt_project.yml /dbt/dbt_project.yml
+ADD ./packages.yml /dbt/packages.yml
+ADD ./tests/portfolio_value_deviation.sql /dbt/tests/portfolio_value_deviation.sql
 ADD ./infra/airflow ./airflow
 ENV LOADER_CONNECTION_URI ${LOADER_CONNECTION_URI}
 ENV LOADER_CONNECTION_URI_PROD ${LOADER_CONNECTION_URI_PROD}
@@ -38,6 +41,7 @@ RUN python -m pip install .
 RUN python -m pip install "apache-airflow[celery]==2.2.5" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.2.5/constraints-3.6.txt"
 
 WORKDIR ./dbt
+CMD ["sh", "-c", "dbt deps"]
 CMD ["sh", "-c", "dbt compile"]
 EXPOSE 8080
 WORKDIR /src

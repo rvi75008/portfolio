@@ -59,6 +59,15 @@ class AsyncPostgresLoader(PostgresLoader):
             data = await f.read()
             self.load(data, file)
 
+    def load_from_dataframe(self, dataframe: pd.DataFrame) -> None:
+        self.logger.info(f"{datetime.now()}-Loading: dataframe")
+        connection = create_engine(self.connection_uri)
+        try:
+            dataframe.to_sql("montecarlo", connection, if_exists="replace", index=False)
+        except (OperationalError, DatabaseError) as e:
+            self.logger.error(f"Error while inserting data into montecarlo: {e}")
+            raise InsertionError(f"Error while inserting data into montecarlo: {e}")
+
 
 async def main(input_dir: str, target: Optional[str] = None):
     async_postgres_loader = AsyncPostgresLoader(
