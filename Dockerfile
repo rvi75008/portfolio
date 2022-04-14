@@ -3,6 +3,7 @@ FROM python:3.8
 ADD ./requirements.txt ./src/requirements.txt
 ADD ./connectors ./src/connectors
 ADD ./loader ./src/loader
+ADD ./computations ./src/computations
 ADD ./config ./src/config
 ADD ./setup.py ./src/setup.py
 ADD ./models ./dbt/models
