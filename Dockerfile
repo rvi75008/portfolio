@@ -10,7 +10,7 @@ ADD ./profiles.yml ./dbt/profiles.yml
 ADD ./dbt_packages ./dbt/dbt_packages
 ADD ./dbt_project.yml /dbt/dbt_project.yml
 ADD ./packages.yml /dbt/packages.yml
-ADD ./tests/dbt /dbt/tests
+ADD ./tests/portfolio_value_deviation.sql /dbt/tests/portfolio_value_deviation.sql
 ADD ./infra/airflow ./airflow
 ENV LOADER_CONNECTION_URI ${LOADER_CONNECTION_URI}
 ENV LOADER_CONNECTION_URI_PROD ${LOADER_CONNECTION_URI_PROD}
