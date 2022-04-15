@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     LOADER_CONNECTION_URI: str = ""
     LOADER_CONNECTION_URI_PROD: str = ""
     EXTRACTION_CONFIG: str = "/src/config/extraction_config.yaml"
+    SCRAPPING_CONFIG: str = "/src/config/scrapping_conf.yaml"
 
     class Config:
         case_sensitive = True

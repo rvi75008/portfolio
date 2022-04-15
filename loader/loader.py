@@ -5,7 +5,7 @@ import os
 import shutil
 from abc import ABC
 from datetime import datetime
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 import aiofiles
 import pandas as pd
@@ -67,6 +67,24 @@ class AsyncPostgresLoader(PostgresLoader):
         except (OperationalError, DatabaseError) as e:
             self.logger.error(f"Error while inserting data into montecarlo: {e}")
             raise InsertionError(f"Error while inserting data into montecarlo: {e}")
+
+    def update_from_list_of_dicts(
+        self,
+        dicts: List[Dict[str, Any]],
+        table: str,
+        cols_to_update: List[str],
+        criteria: List[Dict[str, Any]],
+    ) -> None:
+        self.logger.info(f"{datetime.now()}-Loading: list of Dicts")
+        connection = create_engine(self.connection_uri)
+        try:
+            for d in dicts:
+                query = f"""update {table} set { ",".join([f"{col} = {d[col]}" for col in cols_to_update]) }
+                 where {"AND".join([f"{col} = {crit} " for col, crit in criteria])};"""
+                connection.execute(query)
+        except (OperationalError, DatabaseError) as e:
+            self.logger.error(f"Error while updating data into {table}: {e}")
+            raise InsertionError(f"Error while updating data into {table}: {e}")
 
 
 async def main(input_dir: str, target: Optional[str] = None):
