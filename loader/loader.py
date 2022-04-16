@@ -70,17 +70,29 @@ class AsyncPostgresLoader(PostgresLoader):
 
     def update_from_list_of_dicts(
         self,
-        dicts: List[Dict[str, Any]],
+        values_to_update: List[Dict[str, Any]],
         table: str,
-        cols_to_update: List[str],
+        col_to_update: List[str],
         criteria: List[Dict[str, Any]],
     ) -> None:
         self.logger.info(f"{datetime.now()}-Loading: list of Dicts")
         connection = create_engine(self.connection_uri)
         try:
-            for d in dicts:
-                query = f"""update {table} set { ",".join([f"{col} = {d[col]}" for col in cols_to_update]) }
-                 where {"AND".join([f"{col} = {crit} " for col, crit in criteria])};"""
+            for val, crit in zip(values_to_update, criteria):
+                query = f'UPDATE {table} SET '
+                if isinstance(val, float) or isinstance(val, int):
+                    query += f"{col_to_update} = {val}"
+                else:
+                    query += f"{col_to_update} = '{val}'"
+                query += ' WHERE '
+                criteria_part = []
+                for col, c in crit.items():
+                    if isinstance(c, float) or isinstance(c, int):
+                        criteria_part.append(f"{col} = {c}")
+                    else:
+                        criteria_part.append(f"{col} = '{c}'")
+                query += ' AND '.join(criteria_part)
+                breakpoint()
                 connection.execute(query)
         except (OperationalError, DatabaseError) as e:
             self.logger.error(f"Error while updating data into {table}: {e}")
