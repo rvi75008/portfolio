@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-
+from airflow.utils.task_group import TaskGroup
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
@@ -60,7 +60,7 @@ extraction >> loading >> transforming >> data_quality_checking
 with DAG(
     dag_id="ELT_PROD",
     start_date=datetime(2022, 1, 1, 12, 0, 0),
-    schedule_interval="@hourly",
+    schedule_interval="*/15 * * * *",
     catchup=False,
     default_args={"owner": "airflow", "on_failure_callback": on_failure_callback},
 ) as dag_prod:
@@ -78,6 +78,11 @@ with DAG(
         retries=3,
         retry_delay=timedelta(seconds=10),
         op_kwargs={"target": None},
+    )
+
+    check_extraction_quality = BashOperator(
+        task_id='check_extraction_quality',
+        bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted"
     )
 
     scrapping = PythonOperator(
