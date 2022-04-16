@@ -1,16 +1,23 @@
 import os
+from typing import Any
 from unittest.mock import MagicMock
 
 import docker as docker
 import pandas as pd
 import psycopg2
 import pytest as pytest
+from pandas import DataFrame
 from psycopg2 import OperationalError
 from pytest_mock import MockFixture
 from sqlalchemy import create_engine
 
 from config import config
-from loader.loader import NoFilesFoundException, main
+from loader.loader import (
+    AsyncPostgresLoader,
+    InsertionError,
+    NoFilesFoundException,
+    main,
+)
 
 
 @pytest.fixture(autouse=False)
@@ -70,3 +77,31 @@ async def test_loader_no_file_to_load(mocker: MockFixture) -> None:
     mocker.patch("loader.loader.os.listdir", return_value=[])
     with pytest.raises(NoFilesFoundException):
         await main("./", "development")
+
+
+def test_load_from_dataframe(mocker: MockFixture) -> None:
+    mocked_connection = mocker.MagicMock(name="foo")
+    mocker.patch("loader.loader.create_engine", return_value=mocked_connection)
+
+    spy_df = mocker.spy(DataFrame, "to_sql")
+    loader = AsyncPostgresLoader("postgresql+psycopg2://foo:bar")
+    loader.load_from_dataframe(
+        dataframe=pd.DataFrame({"foo": [1, 2, 3], "bar": [3, 1, 4]})
+    )
+    spy_df.assert_called()
+
+
+def test_load_from_dataframe_error(mocker: MockFixture) -> None:
+    mocked_connection = mocker.MagicMock(name="foo")
+
+    def raise_error(_: Any) -> None:
+        raise OperationalError
+
+    mocker.patch("loader.loader.pd.DataFrame.to_sql", side_effect=OperationalError)
+    mocked_connection.execute = raise_error
+    mocker.patch("loader.loader.create_engine", return_value=mocked_connection)
+    loader = AsyncPostgresLoader("postgresql+psycopg2://foo:bar")
+    with pytest.raises(InsertionError):
+        loader.load_from_dataframe(
+            dataframe=pd.DataFrame({"foo": [1, 2, 3], "bar": [3, 1, 4]})
+        )

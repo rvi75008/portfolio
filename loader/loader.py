@@ -79,21 +79,20 @@ class AsyncPostgresLoader(PostgresLoader):
         connection = create_engine(self.connection_uri)
         try:
             for val, crit in zip(values_to_update, criteria):
-                query = f'UPDATE {table} SET '
+                query = f"UPDATE {table} SET "
                 if isinstance(val, float) or isinstance(val, int):
                     query += f"{col_to_update} = {val}"
                 else:
                     query += f"{col_to_update} = '{val}'"
-                query += ' WHERE '
+                query += " WHERE "
                 criteria_part = []
                 for col, c in crit.items():
                     if isinstance(c, float) or isinstance(c, int):
                         criteria_part.append(f"{col} = {c}")
                     else:
                         criteria_part.append(f"{col} = '{c}'")
-                query += ' AND '.join(criteria_part)
-                breakpoint()
-                connection.execute(query)
+                query += " AND ".join(criteria_part)
+                connection.execute(f"{query};")
         except (OperationalError, DatabaseError) as e:
             self.logger.error(f"Error while updating data into {table}: {e}")
             raise InsertionError(f"Error while updating data into {table}: {e}")
