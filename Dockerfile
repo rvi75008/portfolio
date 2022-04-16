@@ -4,6 +4,7 @@ ADD ./requirements.txt ./src/requirements.txt
 ADD ./connectors ./src/connectors
 ADD ./loader ./src/loader
 ADD ./computations ./src/computations
+ADD ./scrapper ./src/scrapper
 ADD ./config ./src/config
 ADD ./setup.py ./src/setup.py
 ADD ./models ./dbt/models

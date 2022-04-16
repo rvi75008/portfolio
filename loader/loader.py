@@ -5,7 +5,7 @@ import os
 import shutil
 from abc import ABC
 from datetime import datetime
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 import aiofiles
 import pandas as pd
@@ -67,6 +67,35 @@ class AsyncPostgresLoader(PostgresLoader):
         except (OperationalError, DatabaseError) as e:
             self.logger.error(f"Error while inserting data into montecarlo: {e}")
             raise InsertionError(f"Error while inserting data into montecarlo: {e}")
+
+    def update_from_list_of_dicts(
+        self,
+        values_to_update: List[Dict[str, Any]],
+        table: str,
+        col_to_update: List[str],
+        criteria: List[Dict[str, Any]],
+    ) -> None:
+        self.logger.info(f"{datetime.now()}-Loading: list of Dicts")
+        connection = create_engine(self.connection_uri)
+        try:
+            for val, crit in zip(values_to_update, criteria):
+                query = f"UPDATE {table} SET "
+                if isinstance(val, float) or isinstance(val, int):
+                    query += f"{col_to_update} = {val}"
+                else:
+                    query += f"{col_to_update} = '{val}'"
+                query += " WHERE "
+                criteria_part = []
+                for col, c in crit.items():
+                    if isinstance(c, float) or isinstance(c, int):
+                        criteria_part.append(f"{col} = {c}")
+                    else:
+                        criteria_part.append(f"{col} = '{c}'")
+                query += " AND ".join(criteria_part)
+                connection.execute(f"{query};")
+        except (OperationalError, DatabaseError) as e:
+            self.logger.error(f"Error while updating data into {table}: {e}")
+            raise InsertionError(f"Error while updating data into {table}: {e}")
 
 
 async def main(input_dir: str, target: Optional[str] = None):

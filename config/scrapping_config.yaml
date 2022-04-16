@@ -1,0 +1,115 @@
+table: details
+col_to_update: pu
+criteria:
+  - actif
+  - day
+to_scrap:
+  - actif: BGF World Energy
+    url: >-
+      https://www.blackrock.com/sg/en/products/229927/bgf-world-energy-fund-a2-sgd-hedged
+    config:
+      tag: span
+      name_or_id: header-nav-data
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: BGF World Gold
+    url: >-
+      https://www.blackrock.com/sg/en/products/229951/bgf-world-gold-fund-a2-sgd-hedged
+    config:
+      tag: span
+      name_or_id: header-nav-data
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: BGF World Mining
+    url: >-
+      https://www.blackrock.com/sg/en/products/229993/bgf-world-mining-fund-a2-sgd-hedged
+    config:
+      tag: span
+      name_or_id: header-nav-data
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: OR - 10F
+    url: 'https://www.achat-or-et-argent.fr/or/10-francs-napoleon/32'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: OR - 20F
+    url: 'https://www.achat-or-et-argent.fr/or/20-francs-napoleon/6'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: OR - 50 Peso
+    url: 'https://www.achat-or-et-argent.fr/or/50-pesos/11'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: false
+  - actif: AG - 1F
+    url: 'https://www.achat-or-et-argent.fr/argent/1-franc-semeuse-1898-1920/31'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: AG - 5F
+    url: 'https://www.achat-or-et-argent.fr/argent/5-francs-semeuse-1959-1969/22'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: AG - 50F
+    url: 'https://www.achat-or-et-argent.fr/argent/50-francs-hercule-1974-1980/23'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: AG - Phil
+    url: >-
+      https://www.achat-or-et-argent.fr/argent/philharmonique-1-once-2016-argent/1673
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: Nikko AM ASEAN
+    url: >-
+      https://www.dollardex.com/sgn/?current=investUT/fundOverview&p=T+wgEHDfp22k/Z2ztg4jJZuhB3Zo1pH7T+M0gzr9p+A=
+    config:
+      tag: div
+      name_or_id: price clear
+      tag_index: 0
+      content_index: 0
+      split: true
+  - actif: OR - 10$
+    url: 'https://www.achat-or-et-argent.fr/or/10-dollars-us/13'
+    config:
+      tag: span
+      name_or_id:
+        id: tpv
+      tag_index: 0
+      content_index: 0
+      split: true
