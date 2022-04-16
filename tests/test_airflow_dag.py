@@ -19,7 +19,7 @@ def test_dag_loaded(dagbag: DagBag) -> None:
     dag = dagbag.get_dag(dag_id="ELT_PROD")
     assert dagbag.import_errors == {}
     assert dag is not None
-    assert len(dag.tasks) == 4
+    assert len(dag.tasks) == 5
     dag = dagbag.get_dag(dag_id="Montecarlo")
     assert dagbag.import_errors == {}
     assert dag is not None
