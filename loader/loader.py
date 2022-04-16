@@ -76,7 +76,7 @@ class AsyncPostgresLoader(PostgresLoader):
         criteria: List[Dict[str, Any]],
     ) -> None:
         self.logger.info(f"{datetime.now()}-Loading: list of Dicts")
-        connection = create_engine(self.connection_uri).execution_options(autocommit=True)
+        connection = create_engine(self.connection_uri)
         try:
             for val, crit in zip(values_to_update, criteria):
                 query = f"UPDATE {table} SET "
