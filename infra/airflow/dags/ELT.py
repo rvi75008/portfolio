@@ -4,10 +4,11 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-from scrapper.scrapper import run_scrapping
+
 from computations.monte_carlo import run_simulation
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
+from scrapper.scrapper import run_scrapping
 
 os.chdir(os.environ["DBT_PROFILES_DIR"])
 
@@ -83,7 +84,7 @@ with DAG(
         task_id="scrap_data",
         python_callable=run_scrapping,
         retries=3,
-        retry_delay=timedelta(seconds=10)
+        retry_delay=timedelta(seconds=10),
     )
 
     transforming = BashOperator(

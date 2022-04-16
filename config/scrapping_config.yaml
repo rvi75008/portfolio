@@ -1,4 +1,4 @@
-table: details
+table: details_stg
 col_to_update: pu
 criteria:
   - actif
