@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-import sys
+from airflow.utils.trigger_rule import TriggerRule
+
 from computations.monte_carlo import run_simulation
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
@@ -28,7 +29,6 @@ def on_failure_callback(context):
             "text": f"DAG Failed, context: {context}",
         },
     )
-    sys.exit(1)
 
 
 with DAG(
@@ -83,11 +83,13 @@ with DAG(
         retries=3,
         retry_delay=timedelta(seconds=10),
         op_kwargs={"target": None},
+        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
     check_extraction_quality = BashOperator(
-        task_id='check_extraction_quality',
-        bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted"
+        task_id="check_extraction_quality",
+        bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted",
+        trigger_rule=TriggerRule.NONE_FAILED
     )
 
     scrapping = PythonOperator(
@@ -95,14 +97,19 @@ with DAG(
         python_callable=run_scrapping,
         retries=3,
         retry_delay=timedelta(seconds=10),
+        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
     transforming = BashOperator(
-        task_id="transform_data", bash_command="dbt run --project-dir /dbt -t prod"
+        task_id="transform_data",
+        bash_command="dbt run --project-dir /dbt -t prod",
+        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
     data_quality_checking = BashOperator(
-        task_id="check_data_quality", bash_command="dbt test --project-dir /dbt -t prod"
+        task_id="check_data_quality",
+        bash_command="dbt test --project-dir /dbt -t prod",
+        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
 
@@ -118,4 +125,5 @@ with DAG(
         python_callable=run_simulation,
         retries=3,
         retry_delay=timedelta(seconds=10),
+
     )
