@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from airflow.utils.task_group import TaskGroup
+
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
@@ -11,6 +11,10 @@ from loader.loader import run_loading
 from scrapper.scrapper import run_scrapping
 
 os.chdir(os.environ["DBT_PROFILES_DIR"])
+
+
+class DagFailed(Exception):
+    """"""
 
 
 def on_failure_callback(context):
@@ -24,6 +28,7 @@ def on_failure_callback(context):
             "text": f"DAG Failed, context: {context}",
         },
     )
+    raise DagFailed
 
 
 with DAG(
