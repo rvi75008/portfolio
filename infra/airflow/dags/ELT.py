@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-
+import sys
 from computations.monte_carlo import run_simulation
 from connectors.google_sheet_connector import run_extraction
 from loader.loader import run_loading
@@ -28,7 +28,7 @@ def on_failure_callback(context):
             "text": f"DAG Failed, context: {context}",
         },
     )
-    raise DagFailed
+    sys.exit(1)
 
 
 with DAG(
