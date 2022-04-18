@@ -6,6 +6,7 @@ import docker as docker
 import pandas as pd
 import psycopg2
 import pytest as pytest
+from freezegun import freeze_time
 from pandas import DataFrame
 from psycopg2 import OperationalError
 from pytest_mock import MockFixture
@@ -16,6 +17,7 @@ from loader.loader import (
     AsyncPostgresLoader,
     InsertionError,
     NoFilesFoundException,
+    delete_failed_extraction,
     main,
 )
 
@@ -105,3 +107,22 @@ def test_load_from_dataframe_error(mocker: MockFixture) -> None:
         loader.load_from_dataframe(
             dataframe=pd.DataFrame({"foo": [1, 2, 3], "bar": [3, 1, 4]})
         )
+
+
+@freeze_time("2022-01-01")
+def test_delete_failed_extraction(mocker: MockFixture) -> None:
+    mocked_connection = mocker.MagicMock(name="foo")
+    mocker.patch("loader.loader.create_engine", return_value=mocked_connection)
+    delete_failed_extraction()
+    assert (
+        mocked_connection.execute.call_args_list[0][0][0]
+        == """delete from details_stg where day='22-01-01'
+        and date = (select max(date) from details_stg where day='22-01-01');"""
+    )
+
+
+@freeze_time("2022-01-01")
+def test_delete_failed_extraction_error(mocker: MockFixture) -> None:
+    mocker.patch("loader.loader.create_engine", side_effect=OperationalError)
+    with pytest.raises(InsertionError):
+        delete_failed_extraction()

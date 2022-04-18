@@ -8,7 +8,7 @@ from airflow.utils.trigger_rule import TriggerRule
 
 from computations.monte_carlo import run_simulation
 from connectors.google_sheet_connector import run_extraction
-from loader.loader import run_loading
+from loader.loader import delete_failed_extraction, run_loading
 from scrapper.scrapper import run_scrapping
 
 os.chdir(os.environ["DBT_PROFILES_DIR"])
@@ -89,7 +89,8 @@ with DAG(
     check_extraction_quality = BashOperator(
         task_id="check_extraction_quality",
         bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted",
-        trigger_rule=TriggerRule.NONE_FAILED
+        trigger_rule=TriggerRule.NONE_FAILED,
+        on_failure_callback=delete_failed_extraction,
     )
 
     scrapping = PythonOperator(
@@ -112,6 +113,14 @@ with DAG(
         trigger_rule=TriggerRule.NONE_FAILED,
     )
 
+(
+    extraction
+    >> loading
+    >> check_extraction_quality
+    >> scrapping
+    >> transforming
+    >> data_quality_checking
+)
 
 with DAG(
     dag_id="Montecarlo",
@@ -125,5 +134,4 @@ with DAG(
         python_callable=run_simulation,
         retries=3,
         retry_delay=timedelta(seconds=10),
-
     )
