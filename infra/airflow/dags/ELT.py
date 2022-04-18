@@ -112,6 +112,7 @@ with DAG(
         trigger_rule=TriggerRule.NONE_FAILED,
     )
 
+extraction >> loading >> check_extraction_quality >> scrapping >> transforming >> data_quality_checking
 
 with DAG(
     dag_id="Montecarlo",
