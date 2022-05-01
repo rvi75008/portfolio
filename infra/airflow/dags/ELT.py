@@ -90,34 +90,23 @@ with DAG(
         task_id="check_extraction_quality",
         bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted",
         trigger_rule=TriggerRule.NONE_FAILED,
-        on_failure_callback=delete_failed_extraction,
-    )
-
-    scrapping = PythonOperator(
-        task_id="scrap_data",
-        python_callable=run_scrapping,
-        retries=3,
-        retry_delay=timedelta(seconds=10),
-        trigger_rule=TriggerRule.NONE_FAILED,
+        on_failure_callback=run_scrapping,
     )
 
     transforming = BashOperator(
         task_id="transform_data",
         bash_command="dbt run --project-dir /dbt -t prod",
-        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
     data_quality_checking = BashOperator(
         task_id="check_data_quality",
         bash_command="dbt test --project-dir /dbt -t prod",
-        trigger_rule=TriggerRule.NONE_FAILED,
     )
 
 (
     extraction
     >> loading
     >> check_extraction_quality
-    >> scrapping
     >> transforming
     >> data_quality_checking
 )
