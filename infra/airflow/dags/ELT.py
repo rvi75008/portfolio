@@ -26,7 +26,7 @@ def on_failure_callback(context):
         json={
             "username": "airflow",
             "channel": "#portfolio-elt",
-            "text": f"DAG Failed, context: {context}",
+            "text": f"DAG Failed, context: {context['task']} {context['exception']}",
         },
     )
 

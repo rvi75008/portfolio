@@ -2,13 +2,17 @@ import asyncio
 import datetime
 import io
 from typing import Dict, List, Optional
+
 import backoff
 import httpx
 import pandas as pd
 import yaml
 
 from config.config import settings
-from connectors.helpers.extraction_helpers import prepare_df_for_insertion, ScrapedValuesError
+from connectors.helpers.extraction_helpers import (
+    ScrapedValuesError,
+    prepare_df_for_insertion,
+)
 from connectors.helpers.transformation_config import transformations  # type: ignore
 
 
@@ -42,12 +46,26 @@ class Connector:
                 dataframes.append(pd.read_csv(text_io, decimal=decimal))
         return dataframes
 
-    @backoff.on_exception(backoff.expo, ScrapedValuesError, max_tries=5)
-    async def extract_data(self, prefix: str, decimal: Optional[str]) -> None:
+    async def extract_data(
+        self, prefix: str, decimal: Optional[str], tries: Optional[int] = 0
+    ) -> None:
+        try:
+            await self.extract_clean_write_file(decimal, prefix)
+        except ScrapedValuesError:
+            tries += 1
+            if tries == 5:
+                await self.extract_clean_write_file(
+                    decimal, prefix, False
+                )  # Write file anyway, we'll have a logic to correct
+            else:
+                await asyncio.sleep(1.5 * tries)
+                await self.extract_data(prefix, decimal, tries)
+
+    async def extract_clean_write_file(self, decimal: str, prefix: str, check: Optional[bool] = True ):
         extracted_dataframes = await self.async_extract_csvs(decimal=decimal)
         [
             prepare_df_for_insertion(
-                extracted_dataframe, datasource.sheet, datasource.transformation_logic
+                extracted_dataframe, datasource.sheet, datasource.transformation_logic, check=check
             ).to_csv(
                 f"{prefix}{datasource.sheet}#{datetime.datetime.now()}.csv", index=False
             )

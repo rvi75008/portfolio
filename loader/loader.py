@@ -161,9 +161,11 @@ def delete_failed_extraction() -> None:
     from datetime import datetime
 
     try:
+        logging.getLogger(__name__).info('Deleting failed extraction')
         connection = create_engine(settings.LOADER_CONNECTION_URI_PROD)
         query = f"""delete from details_stg where day='{datetime.now().strftime("%y-%m-%d")}'
         and date = (select max(date) from details_stg where day='{datetime.now().strftime("%y-%m-%d")}');"""
-        connection.execute(query)
+        result = connection.execute(query)
+        logging.getLogger(__name__).info(f'Deletion result {result}')
     except (OperationalError, DatabaseError) as e:
         raise InsertionError(f"Error while removing failed extraction: {e}")
