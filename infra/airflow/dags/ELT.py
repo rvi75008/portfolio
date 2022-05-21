@@ -17,6 +17,9 @@ os.chdir(os.environ["DBT_PROFILES_DIR"])
 class DagFailed(Exception):
     """"""
 
+def run_scrapping_no_arg(context):
+    return run_scrapping()
+
 
 def on_failure_callback(context):
     import requests
@@ -88,9 +91,9 @@ with DAG(
 
     check_extraction_quality = BashOperator(
         task_id="check_extraction_quality",
-        bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted",
+        bash_command="dbt test --project-dir /dbt -t prod --select test_garbage_extracted && dbt test --project-dir /dbt -t prod --select test_garbage_extracted_unitprices",
         trigger_rule=TriggerRule.NONE_FAILED,
-        on_failure_callback=run_scrapping,
+        on_failure_callback=run_scrapping_no_arg,
     )
 
     transforming = BashOperator(
