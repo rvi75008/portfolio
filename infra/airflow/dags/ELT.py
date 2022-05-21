@@ -99,11 +99,13 @@ with DAG(
     transforming = BashOperator(
         task_id="transform_data",
         bash_command="dbt run --project-dir /dbt -t prod",
+        trigger_rule='all_done'
     )
 
     data_quality_checking = BashOperator(
         task_id="check_data_quality",
         bash_command="dbt test --project-dir /dbt -t prod",
+        trigger_rule='all_done'
     )
 
 (
